@@ -18,3 +18,8 @@ end
 
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
+dofile(MP.."/api.lua")
+
+if minetest.get_modpath("mtt") and mtt.enabled then
+	dofile(MP.."/mtt.lua")
+end
