@@ -18,6 +18,9 @@ end
 
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
+loadfile(MP.."/serialize.lua")(global_env)
+dofile(MP.."/encode.lua")
+dofile(MP.."/serialize_mapblock.lua")
 dofile(MP.."/api.lua")
 
 if minetest.get_modpath("mtt") and mtt.enabled then

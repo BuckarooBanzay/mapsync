@@ -14,6 +14,9 @@ read_globals = {
 	"dump", "dump2",
 	"VoxelArea",
 
+	-- mods
+	"mtzip",
+
 	-- testing
 	"mtt"
 }
