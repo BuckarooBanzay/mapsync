@@ -30,3 +30,9 @@ function mapsync.encode_uint32(v)
 	local b4 = bitand( rshift(v, 24), 0xFF )
 	return string.char(b1, b2, b3, b4)
 end
+
+function mapsync.decode_uint16(str, ofs)
+	ofs = ofs or 0
+	local a, b = string.byte(str, ofs + 1, ofs + 2)
+	return a + b * 0x100
+end
