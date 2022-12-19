@@ -5,6 +5,10 @@ local char, encode_uint16, insert = string.char, mapsync.encode_uint16, table.in
 
 function mapsync.serialize_chunk(chunk_pos, filename)
     local f = global_env.io.open(filename, "w")
+    if not f then
+        return false, "could not open '" .. filename .. "'"
+    end
+
     local zip = mtzip.zip(f)
 
     local blockdata_list = {}

@@ -18,7 +18,7 @@ mtt.register("register and export", function(callback)
 end)
 
 
-mtt.register("serlize_chunk", function(callback)
+mtt.register("serialize_chunk", function(callback)
     local pos1 = { x=0, y=0, z=0 }
     local pos2 = { x=20, y=20, z=20 }
 
