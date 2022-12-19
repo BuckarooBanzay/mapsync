@@ -27,7 +27,7 @@ mtt.register("serialize and deserialize chunk", function(callback)
     local node_pos = { x=10, y=5, z=0 }
 
     -- prepare
-    minetest.set_node(node_pos, { name = "default:stone", param2 = 66 })
+    minetest.set_node(node_pos, { name = "default:mese", param2 = 66 })
 
     local success, err_msg = mapsync.serialize_chunk(chunk_pos, filename)
     assert(success)
@@ -41,7 +41,7 @@ mtt.register("serialize and deserialize chunk", function(callback)
     -- assert
     local target_node_pos = vector.add(node_pos, { x=80, y=0, z=0 })
     local node = minetest.get_node(target_node_pos)
-    assert(node.name == "default:stone")
+    assert(node.name == "default:mese")
     assert(node.param2 == 66)
 
     callback()
