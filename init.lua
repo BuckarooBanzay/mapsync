@@ -3,7 +3,8 @@ local MP = minetest.get_modpath("mapsync")
 -- mod namespace
 mapsync = {
 	pos1 = {},
-	pos2 = {}
+	pos2 = {},
+	version = 1
 }
 
 -- secure/insecure environment
@@ -16,12 +17,13 @@ if ie then
 	global_env = ie
 end
 
+dofile(MP.."/api.lua")
+dofile(MP.."/encode.lua")
+
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/serialize.lua")(global_env)
-dofile(MP.."/encode.lua")
 dofile(MP.."/serialize_mapblock.lua")
-dofile(MP.."/api.lua")
 
 if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/mtt.lua")

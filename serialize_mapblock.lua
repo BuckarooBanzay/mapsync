@@ -28,16 +28,16 @@ minetest.register_on_mods_loaded(function()
 	end
 end)
 
-
 -- local vars for faster access
-local char, encode_uint16, insert = string.char, mapsync.encode_uint16, table.insert
+local insert = table.insert
 
 --- Serializes the mapblock at the given position
 -- @param mapblock_pos the mapblock-position
 -- @return @{mapblock_data}
-function mapsync.serialize_mapblock(mapblock_pos)
-	local pos1, pos2 = mapsync.get_mapblock_bounds_from_mapblock(mapblock_pos)
+function mapsync.serialize_mapblock(mapblock_pos, node_mapping)
+	node_mapping = node_mapping or {}
 
+	local pos1, pos2 = mapsync.get_mapblock_bounds_from_mapblock(mapblock_pos)
 	assert((pos2.x - pos1.x) == 15)
 	assert((pos2.y - pos1.y) == 15)
 	assert((pos2.z - pos1.z) == 15)
@@ -54,23 +54,22 @@ function mapsync.serialize_mapblock(mapblock_pos)
 	assert(#param1 == 4096)
 	assert(#param2 == 4096)
 
-	-- prepare data structure
-	local data = {
-		mapdata = {},
-		metadata = {},
-		-- name -> id
-		node_mapping = {},
-		has_metadata = false,
+	-- serialized block
+	local blockdata = {
 		empty = true,
-		pos = mapblock_pos
+		has_metadata = false,
+		metadata = {},
+		node_ids = {},
+		param1 = {},
+		param2 = {}
 	}
 
-	local mapdata = {}
-
-	-- id -> nodename
-	local rev_node_mapping = {}
-
-	local j = 1
+	-- id -> true
+	local mapped_node_ids = {}
+	-- collect mapped node ids
+	for _, node_id in pairs(node_mapping) do
+		mapped_node_ids[node_id] = true
+	end
 
 	-- loop over all blocks and fill cid,param1 and param2
 	for z=pos1.z,pos2.z do
@@ -85,24 +84,22 @@ function mapsync.serialize_mapblock(mapblock_pos)
 		end
 
 		if node_id ~= air_content_id then
-			data.empty = false
+			blockdata.empty = false
 		end
 
-		-- map node_id
-		if not rev_node_mapping[node_id] then
+		-- map node_id if not already mapped
+		if not mapped_node_ids[node_id] then
 			local nodename = minetest.get_name_from_content_id(node_id)
-			rev_node_mapping[node_id] = nodename
-			data.node_mapping[nodename] = node_id
+			mapped_node_ids[node_id] = nodename
+			node_mapping[nodename] = node_id
 		end
 
-		mapdata[j] = encode_uint16(node_id)
-		mapdata[j+(4096*2)] = param1[i]
-		mapdata[j+(4096*3)] = param2[i]
+		insert(blockdata.node_ids, node_id)
+		insert(blockdata.param1, param1[i])
+		insert(blockdata.param2, param2[i])
 	end
 	end
 	end
-
-	data.mapdata = table.concat(mapdata)
 
 	-- serialize metadata
 	local pos_with_meta = minetest.find_nodes_with_meta(pos1, pos2)
@@ -116,32 +113,32 @@ function mapsync.serialize_mapblock(mapblock_pos)
 				local itemstack = invlist[index]
 				if itemstack.to_string then
 					invlist[index] = itemstack:to_string()
-					data.has_metadata = true
+					blockdata.has_metadata = true
 				end
 			end
 		end
 
 		-- dirty workaround for https://github.com/minetest/minetest/issues/8943
 		if next(meta) and (next(meta.fields) or next(meta.inventory)) then
-			data.has_metadata = true
-			data.metadata.meta = data.metadata.meta or {}
-			data.metadata.meta[minetest.pos_to_string(relative_pos)] = meta
+			blockdata.has_metadata = true
+			blockdata.metadata.meta = blockdata.metadata.meta or {}
+			blockdata.metadata.meta[minetest.pos_to_string(relative_pos)] = meta
 		end
 
 	end
 
 	-- serialize node timers
 	if #node_names_with_timer > 0 then
-		data.metadata.timers = {}
+		blockdata.metadata.timers = {}
 		local list = minetest.find_nodes_in_area(pos1, pos2, node_names_with_timer)
 		for _, timer_pos in pairs(list) do
 			local timer = minetest.get_node_timer(timer_pos)
 			local relative_pos = vector.subtract(timer_pos, pos1)
 			if timer:is_started() then
-				data.has_metadata = true
+				blockdata.has_metadata = true
 				local timeout = timer:get_timeout()
 				local elapsed = timer:get_elapsed()
-				data.metadata.timers[minetest.pos_to_string(relative_pos)] = {
+				blockdata.metadata.timers[minetest.pos_to_string(relative_pos)] = {
 					timeout = timeout,
 					-- round down elapsed timer
 					elapsed = math.min(math.floor(elapsed/10)*10, timeout)
@@ -151,5 +148,5 @@ function mapsync.serialize_mapblock(mapblock_pos)
 
 	end
 
-	return data
+	return blockdata
 end
