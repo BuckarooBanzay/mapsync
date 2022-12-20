@@ -22,7 +22,7 @@ function mapsync.deserialize_chunk(chunk_pos, filename)
     if not metadata_str then
         return false, md_err_msg
     end
-    local metadata = minetest.parse_json(metadata_str)
+    local metadata = minetest.parse_json(metadata_str) or {}
 
     -- parse mapdata
     local mapdata, map_err_msg = zip:get("mapdata.bin")
