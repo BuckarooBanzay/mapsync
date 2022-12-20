@@ -32,5 +32,6 @@ loadfile(MP.."/deserialize_chunk.lua")(global_env)
 
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
-	dofile(MP.."/mtt.lua")
+	dofile(MP.."/api.spec.lua")
+	dofile(MP.."/serialize_chunk.spec.lua")
 end
