@@ -1,10 +1,14 @@
 local MP = minetest.get_modpath("mapsync")
+local storage = minetest.get_mod_storage()
 
 -- mod namespace
 mapsync = {
-	pos1 = {},
-	pos2 = {},
-	version = 1
+	-- current major version
+	version = 1,
+	-- mod storage
+	storage = storage,
+	-- autosave feature
+	autosave = storage:get_int("autosave") == 1,
 }
 
 -- secure/insecure environment
@@ -18,12 +22,21 @@ end
 
 -- api surface
 dofile(MP.."/api.lua")
+dofile(MP.."/privs.lua")
 
 -- utilities / helpers
 dofile(MP.."/encoding.lua")
 dofile(MP.."/serialize_mapblock.lua")
 dofile(MP.."/deserialize_mapblock.lua")
 dofile(MP.."/localize_nodeids.lua")
+
+-- save/load
+dofile(MP.."/autosave.lua")
+dofile(MP.."/save.lua")
+dofile(MP.."/mapgen.lua")
+
+-- hud stuff
+dofile(MP.."/hud.lua")
 
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
