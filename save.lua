@@ -10,12 +10,8 @@ minetest.register_chatcommand("mapsync_save", {
 
         local ppos = player:get_pos()
         local chunk_pos = mapsync.get_chunkpos(ppos)
-        local backend = mapsync.select_backend(chunk_pos)
-        if not backend then
-            return true, "No backend available"
-        end
 
-        local success, err_msg = backend.save_chunk(chunk_pos)
+        local success, err_msg = mapsync.save(chunk_pos)
         if success then
             return true, "Saved chunk: " .. minetest.pos_to_string(chunk_pos)
         else
@@ -25,3 +21,12 @@ minetest.register_chatcommand("mapsync_save", {
         end
 	end
 })
+
+function mapsync.save(chunk_pos)
+    local backend = mapsync.select_backend(chunk_pos)
+    if not backend then
+        return true, "No backend available"
+    end
+
+    return backend.save_chunk(chunk_pos)
+end
