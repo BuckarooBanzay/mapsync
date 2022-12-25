@@ -15,7 +15,7 @@ mapsync = {
 local global_env = _G
 local ie = minetest.request_insecure_environment and minetest.request_insecure_environment()
 if ie then
-	print("[mapsync] using insecure environment")
+	minetest.log("action", "[mapsync] using insecure environment")
 	-- register insecure environment
 	global_env = ie
 end
