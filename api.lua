@@ -12,8 +12,8 @@ function mapsync.register_backend(name, backend_def)
         backend_def.save_chunk = backend_def.save_chunk or function(chunk_pos)
             return mapsync.serialize_chunk(chunk_pos, backend_def.get_path(chunk_pos))
         end
-        backend_def.load_chunk = backend_def.load_chunk or function(chunk_pos)
-            return mapsync.deserialize_chunk(chunk_pos, backend_def.get_path(chunk_pos))
+        backend_def.load_chunk = backend_def.load_chunk or function(chunk_pos, vmanip)
+            return mapsync.deserialize_chunk(chunk_pos, backend_def.get_path(chunk_pos), vmanip)
         end
     else
         error("unknown backend type: '" .. backend_def.type .. "' for backend '" .. name .. "'")

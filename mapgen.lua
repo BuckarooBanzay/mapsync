@@ -5,5 +5,6 @@ minetest.register_on_generated(function(minp)
         return
     end
 
-    backend.load_chunk(chunk_pos)
+    local vmanip = minetest.get_mapgen_object("voxelmanip")
+    backend.load_chunk(chunk_pos, vmanip)
 end)

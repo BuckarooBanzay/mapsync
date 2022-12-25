@@ -3,7 +3,7 @@ local global_env = ...
 -- local vars for faster access
 local insert, byte, decode_uint16 = table.insert, string.byte, mapsync.decode_uint16
 
-function mapsync.deserialize_chunk(chunk_pos, filename)
+function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
     local f = global_env.io.open(filename)
     local zip, err_msg = mtzip.unzip(f)
     if not zip then
@@ -54,7 +54,7 @@ function mapsync.deserialize_chunk(chunk_pos, filename)
         mapsync.localize_nodeids(manifest.node_mapping, blockdata.node_ids)
 
         local mapblock_pos = vector.add(rel_mapblock_pos, min_mapblock)
-        mapsync.deserialize_mapblock(mapblock_pos, blockdata)
+        mapsync.deserialize_mapblock(mapblock_pos, blockdata, vmanip)
     end
 
     return true

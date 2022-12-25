@@ -1,5 +1,7 @@
 
 function mapsync.deserialize_mapblock(mapblock_pos, blockdata)
+	-- TODO: use mapgen vmanip (3rd parameter)
+
     local pos1 = vector.multiply(mapblock_pos, 16)
 	local pos2 = vector.add(pos1, 15) -- inclusive
 
