@@ -7,7 +7,7 @@ mapsync mod
 
 # Overview
 
-Snychronized the ingame map with a lua-backend
+Synchronize the ingame map with a lua-backend
 
 Supported lua-backends:
 * `fs` local filesystem (can be in a world- or mod-folder)
@@ -55,6 +55,34 @@ mapsync.register_backend("my-backend", {
     end
 })
 ```
+
+# Storage
+
+Chunks are stored as multiple mapblocks in a zip file in the backend folder:
+```
+'chunk_(2,0,1).zip'
+'chunk_(3,0,1).zip'
+'chunk_(3,0,2).zip'
+'chunk_(4,0,1).zip'
+'chunk_(4,0,2).zip'
+```
+
+The contents:
+```
+# unzip -l chunk_\(2\,0\,1\).zip 
+Archive:  chunk_(2,0,1).zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      668  2022-12-25 19:54   metadata.json
+  1359872  2022-12-25 19:54   mapdata.bin
+     2768  2022-12-25 19:54   manifest.json
+---------                     -------
+  1363308                     3 files
+```
+
+* `metadata.json` the metadata (node-timers, inventories, etc)
+* `mapdata.bin` the mapdata (node-ids, param1, param2)
+* `manifest.json` the node-id mappings and mapblock-placements inside the exported chunk
 
 # Commands
 
