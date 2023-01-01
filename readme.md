@@ -15,6 +15,9 @@ Supported lua-backends:
 Planned backends:
 * `http` http/webdav backend
 
+Planned features:
+* Diffing/Merging/Applying changes from multiple sources (git merges for example)
+
 # Use case
 
 * Map-exchange
