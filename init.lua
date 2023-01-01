@@ -31,7 +31,8 @@ dofile(MP.."/deserialize_mapblock.lua")
 dofile(MP.."/localize_nodeids.lua")
 
 -- save/load
-dofile(MP.."/autosave.lua")
+dofile(MP.."/auto_save.lua")
+dofile(MP.."/auto_update.lua")
 dofile(MP.."/save.lua")
 dofile(MP.."/mapgen.lua")
 

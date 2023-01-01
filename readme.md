@@ -15,9 +15,11 @@ Supported lua-backends:
 Planned backends:
 * `http` http/webdav backend
 
+Features:
+* Auto-update chunks if a newer version on the backend is found
+
 Planned features:
 * Diffing/Merging/Applying changes from multiple sources (git merges for example)
-* Auto-update chunks if a newer version on the backend is found
 
 # Use case
 
