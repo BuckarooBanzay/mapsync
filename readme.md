@@ -15,6 +15,12 @@ Supported lua-backends:
 Planned backends:
 * `http` http/webdav backend
 
+# Use case
+
+* Map-exchange
+* Mod integrated maps (like the `modgen` mod but with an additional central mod)
+* Adventure maps
+
 # Howto
 
 Create a new mod (or use an existing one) and add the backend-registration:
@@ -55,6 +61,12 @@ mapsync.register_backend("my-backend", {
     end
 })
 ```
+
+## Registering multiple backends
+
+Multiple backends can be registered as long as the `select` function is returning an area exclusive to each other (no overlapping regions)
+
+Otherwise the save/load mechanism won't be deterministic
 
 # Storage
 

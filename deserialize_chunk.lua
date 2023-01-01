@@ -42,14 +42,14 @@ function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
         }
 
         for i=1,4096 do
-			local node_id = decode_uint16(mapdata, ((mbi-1) * 4096 * 2) + (i * 2) - 2)
-			local param1 = byte(mapdata, (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
-			local param2 = byte(mapdata, (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
+            local node_id = decode_uint16(mapdata, ((mbi-1) * 4096 * 2) + (i * 2) - 2)
+            local param1 = byte(mapdata, (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
+            local param2 = byte(mapdata, (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
 
-			insert(blockdata.node_ids, node_id)
-			insert(blockdata.param1, param1)
-			insert(blockdata.param2, param2)
-		end
+            insert(blockdata.node_ids, node_id)
+            insert(blockdata.param1, param1)
+            insert(blockdata.param2, param2)
+        end
 
         mapsync.localize_nodeids(manifest.node_mapping, blockdata.node_ids)
 
