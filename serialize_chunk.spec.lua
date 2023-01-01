@@ -25,5 +25,12 @@ mtt.register("serialize and deserialize chunk", function(callback)
     assert(node.name == "default:mese")
     assert(node.param2 == 66)
 
+    local manifest = mapsync.get_manifest(filename)
+    assert(manifest)
+    assert(manifest.mtime)
+
+    local mtime = mapsync.get_world_chunk_mtime(target_chunk_pos)
+    assert(mtime == manifest.mtime)
+
     callback()
 end)

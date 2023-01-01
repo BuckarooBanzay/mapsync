@@ -52,3 +52,13 @@ function mapsync.get_mapblock_bounds_from_mapblock(mapblock)
 	local max = vector.add(min, 15)
 	return min, max
 end
+
+-- returns the mtime of the emerged chunk (mtime from manifest)
+function mapsync.get_world_chunk_mtime(chunk_pos)
+	local mtime = mapsync.storage:get_int(minetest.pos_to_string(chunk_pos))
+    if mtime == 0 then
+        return nil
+    else
+        return mtime
+    end
+end

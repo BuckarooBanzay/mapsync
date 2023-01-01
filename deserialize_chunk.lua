@@ -57,5 +57,23 @@ function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
         mapsync.deserialize_mapblock(mapblock_pos, blockdata, vmanip)
     end
 
+    -- update or set the manifest mtime
+    mapsync.storage:set_int(minetest.pos_to_string(chunk_pos), manifest.mtime)
+
     return true
+end
+
+function mapsync.get_manifest(filename)
+	local f = global_env.io.open(filename)
+    local zip, err_msg = mtzip.unzip(f)
+    if not zip then
+        return nil, err_msg
+    end
+
+    -- parse manifest
+    local manifest_str, m_err_msg = zip:get("manifest.json")
+    if not manifest_str then
+        return nil, m_err_msg
+    end
+    return minetest.parse_json(manifest_str)
 end
