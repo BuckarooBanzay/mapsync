@@ -105,7 +105,7 @@ Archive:  chunk_(2,0,1).zip
 # Commands
 
 * `mapsync_autosave [on|off]` enable or disable the autosave process
-* `mapsync_save` saves the current chunk to the available backend
+* `mapsync_save [chunk-range]` saves the current chunk to the available backend (optionally takes a cubic radius as argument)
 
 # Privs
 
