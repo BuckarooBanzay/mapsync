@@ -20,7 +20,7 @@ Features:
 
 Planned features:
 * Diffing/Merging/Applying changes from multiple sources (git merges for example)
-* 
+* `placeholder` support
 
 # Use case
 
