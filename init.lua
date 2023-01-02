@@ -25,6 +25,7 @@ dofile(MP.."/api.lua")
 dofile(MP.."/privs.lua")
 
 -- utilities / helpers
+dofile(MP.."/pos_iterator.lua")
 dofile(MP.."/encoding.lua")
 dofile(MP.."/serialize_mapblock.lua")
 dofile(MP.."/deserialize_mapblock.lua")
