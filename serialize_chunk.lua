@@ -4,13 +4,8 @@ local global_env = ...
 local char, encode_uint16, insert = string.char, mapsync.encode_uint16, table.insert
 
 function mapsync.serialize_chunk(chunk_pos, filename)
-    local f = global_env.io.open(filename, "w")
-    if not f then
-        return false, "could not open '" .. filename .. "'"
-    end
 
-    local zip = mtzip.zip(f)
-
+    local chunk_empty = true
     local blockdata_list = {}
     local node_mapping = {}
 
@@ -24,11 +19,24 @@ function mapsync.serialize_chunk(chunk_pos, filename)
                 blockdata.rel_pos = vector.subtract(mapblock_pos, min)
 
                 if not blockdata.empty then
+                    chunk_empty = false
                     insert(blockdata_list, blockdata)
                 end
             end
         end
     end
+
+    if chunk_empty then
+        -- skip empty chunks
+        return true
+    end
+
+    -- open zip for writing
+    local f = global_env.io.open(filename, "w")
+    if not f then
+        return false, "could not open '" .. filename .. "'"
+    end
+    local zip = mtzip.zip(f)
 
     -- marshal blockdata to export-entries
     local mapdata = {}
