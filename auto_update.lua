@@ -10,20 +10,8 @@ function mapsync.update_chunk(chunk_pos)
     end
     cache[cache_key] = true
 
-    -- get backend
-    local backend = mapsync.select_backend(chunk_pos)
-    if not backend then
-        return
-    end
-
-    -- get manifest
-    local manifest = backend.get_manifest(chunk_pos)
-    if not manifest then
-        return
-    end
-
     -- retrieve timestamps
-    local mod_mtime = manifest.mtime
+    local mod_mtime = mapsync.get_backend_chunk_mtime(chunk_pos)
     local world_mtime = mapsync.get_world_chunk_mtime(chunk_pos)
 
     if not mod_mtime then
@@ -36,12 +24,8 @@ function mapsync.update_chunk(chunk_pos)
         return
     end
 
-    local mapblock_min, mapblock_max = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
-    local min = mapsync.get_mapblock_bounds_from_mapblock(mapblock_min)
-    local _, max = mapsync.get_mapblock_bounds_from_mapblock(mapblock_max)
-
     minetest.log("action", "[mapsync] updating chunk " .. minetest.pos_to_string(chunk_pos))
-    minetest.delete_area(min, max)
+    mapsync.delete_chunk(chunk_pos)
 end
 
 local function check_player_pos(player)
