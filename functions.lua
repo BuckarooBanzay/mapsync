@@ -89,3 +89,16 @@ function mapsync.delete_chunk(chunk_pos)
 	mapsync.storage:set_string(minetest.pos_to_string(chunk_pos), "")
     minetest.delete_area(min, max)
 end
+
+-- emerges a chunk
+function mapsync.emerge_chunk(chunk_pos, callback)
+	local mapblock_min, mapblock_max = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
+    local min = mapsync.get_mapblock_bounds_from_mapblock(mapblock_min)
+    local _, max = mapsync.get_mapblock_bounds_from_mapblock(mapblock_max)
+
+	minetest.emerge_area(min, max, function(_, _, calls_remaining)
+		if calls_remaining == 0 and type(callback) == "function" then
+			callback()
+		end
+	end)
+end
