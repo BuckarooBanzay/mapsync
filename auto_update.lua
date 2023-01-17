@@ -31,7 +31,7 @@ end
 local function check_player_pos(player)
     local ppos = player:get_pos()
     local chunk_pos = mapsync.get_chunkpos(ppos)
-    mapsync.check_chunk_update(chunk_pos)
+    mapsync.update_chunk(chunk_pos)
 end
 
 local function check_players()
