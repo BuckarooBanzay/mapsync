@@ -1,9 +1,8 @@
 
 local cache = {}
-local function check_player_pos(player)
-    local ppos = player:get_pos()
-    local chunk_pos = mapsync.get_chunkpos(ppos)
 
+-- updates a chunk if there is a newer version available
+function mapsync.update_chunk(chunk_pos)
     -- cache access
     local cache_key = minetest.pos_to_string(chunk_pos)
     if cache[cache_key] then
@@ -43,6 +42,12 @@ local function check_player_pos(player)
 
     minetest.log("action", "[mapsync] updating chunk " .. minetest.pos_to_string(chunk_pos))
     minetest.delete_area(min, max)
+end
+
+local function check_player_pos(player)
+    local ppos = player:get_pos()
+    local chunk_pos = mapsync.get_chunkpos(ppos)
+    mapsync.check_chunk_update(chunk_pos)
 end
 
 local function check_players()
