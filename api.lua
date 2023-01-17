@@ -18,6 +18,20 @@ function mapsync.register_backend(name, backend_def)
         backend_def.get_manifest = backend_def.get_manifest or function(chunk_pos)
             return mapsync.get_manifest(backend_def.get_path(chunk_pos))
         end
+        backend_def.list_chunks = backend_def.list_chunks or function()
+            local files = minetest.get_dir_list(backend_def.path, false)
+            local chunks = {}
+            for _, filename in ipairs(files) do
+                if string.match(filename, "^[chunk_(].*[).zip]$") then
+                    local pos_str = string.gsub(filename, "chunk_", "")
+                    pos_str = string.gsub(pos_str, ".zip", "")
+
+                    local pos = minetest.string_to_pos(pos_str)
+                    table.insert(chunks, pos)
+                end
+            end
+            return chunks
+        end
     else
         error("unknown backend type: '" .. backend_def.type .. "' for backend '" .. name .. "'")
     end
