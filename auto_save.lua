@@ -43,6 +43,8 @@ minetest.after(1, worker)
 -- @param pos1 the first position of the changed region
 -- @param pos2 the second position of the changed region
 function mapsync.mark_changed(pos1, pos2)
+	mapsync.last_mapchange = os.time()
+
 	if not mapsync.autosave then
 		return
 	end

@@ -5,6 +5,8 @@ local storage = minetest.get_mod_storage()
 mapsync = {
 	-- current major version
 	version = 1,
+	-- time of last map change (for auto_updating / change detection)
+	last_mapchange = os.time(),
 	-- mod storage
 	storage = storage,
 	-- autosave feature
