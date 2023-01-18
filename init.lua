@@ -45,6 +45,7 @@ dofile(MP.."/hud.lua")
 -- pass on global env (secure/insecure)
 loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/serialize_chunk.lua")(global_env)
+loadfile(MP.."/parse_chunk.lua")(global_env)
 loadfile(MP.."/deserialize_chunk.lua")(global_env)
 
 -- testing
