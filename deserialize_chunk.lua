@@ -1,5 +1,7 @@
 local global_env = ...
 
+local param1, param2, node_data
+
 -- deserializes the chunk to the world
 function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
     local chunk, err_msg = mapsync.parse_chunk(filename)
@@ -9,9 +11,9 @@ function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
 
     local min_mapblock = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
 
-    local node_data = vmanip:get_data()
-	local param1 = vmanip:get_light_data()
-	local param2 = vmanip:get_param2_data()
+    node_data = vmanip:get_data(node_data)
+	param1 = vmanip:get_light_data(param1)
+	param2 = vmanip:get_param2_data(param2)
 	local e1, e2 = vmanip:get_emerged_area()
 	local area = VoxelArea:new({MinEdge=e1, MaxEdge=e2})
 
@@ -24,6 +26,7 @@ function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
     vmanip:set_data(node_data)
 	vmanip:set_light_data(param1)
 	vmanip:set_param2_data(param2)
+    vmanip:calc_lighting()
     vmanip:write_to_map(false)
 
     -- update or set the manifest mtime
