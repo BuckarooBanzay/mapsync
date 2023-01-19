@@ -34,7 +34,7 @@ dofile(MP.."/deserialize_mapblock.lua")
 dofile(MP.."/localize_nodeids.lua")
 
 -- diff / patch
-dofile(MP.."/create_diff.lua")
+loadfile(MP.."/create_diff.lua")(global_env)
 dofile(MP.."/apply_diff.lua")
 
 -- save/load
@@ -54,6 +54,7 @@ loadfile(MP.."/deserialize_chunk.lua")(global_env)
 
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
+	dofile(MP.."/functions.spec.lua")
 	dofile(MP.."/diff.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")

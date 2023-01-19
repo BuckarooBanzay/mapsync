@@ -93,12 +93,58 @@ end
 -- emerges a chunk
 function mapsync.emerge_chunk(chunk_pos, callback)
 	local mapblock_min, mapblock_max = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
-    local min = mapsync.get_mapblock_bounds_from_mapblock(mapblock_min)
-    local _, max = mapsync.get_mapblock_bounds_from_mapblock(mapblock_max)
+	local min = mapsync.get_mapblock_bounds_from_mapblock(mapblock_min)
+	local _, max = mapsync.get_mapblock_bounds_from_mapblock(mapblock_max)
 
 	minetest.emerge_area(min, max, function(_, _, calls_remaining)
 		if calls_remaining == 0 and type(callback) == "function" then
 			callback()
 		end
 	end)
+end
+
+function mapsync.mapblock_index_to_pos(index)
+    index = index - 1
+    local y = index % 16
+    index = index - y
+	local z = math.floor(index / 256)
+	index = index - (z * 256)
+	local x = math.floor(index / 16)
+
+	return { x=x, y=y, z=z }
+end
+
+-- Source: https://gist.github.com/sapphyrus/fd9aeb871e3ce966cc4b0b969f62f539, license: MIT
+function mapsync.deep_compare(tbl1, tbl2)
+	if tbl1 == tbl2 then
+		return true
+	elseif type(tbl1) == "table" and type(tbl2) == "table" then
+		for key1, value1 in pairs(tbl1) do
+			local value2 = tbl2[key1]
+
+			if value2 == nil then
+				-- avoid the type call for missing keys in tbl2 by directly comparing with nil
+				return false
+			elseif value1 ~= value2 then
+				if type(value1) == "table" and type(value2) == "table" then
+					if not mapsync.deep_compare(value1, value2) then
+						return false
+					end
+				else
+					return false
+				end
+			end
+		end
+
+		-- check for missing keys in tbl1
+		for key2, _ in pairs(tbl2) do
+			if tbl1[key2] == nil then
+				return false
+			end
+		end
+
+		return true
+	end
+
+	return false
 end
