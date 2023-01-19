@@ -26,7 +26,6 @@ function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
     vmanip:set_data(node_data)
 	vmanip:set_light_data(param1)
 	vmanip:set_param2_data(param2)
-    vmanip:calc_lighting()
     vmanip:write_to_map(false)
 
     -- update or set the manifest mtime
