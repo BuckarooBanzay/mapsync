@@ -38,6 +38,7 @@ dofile(MP.."/auto_save.lua")
 dofile(MP.."/auto_update.lua")
 dofile(MP.."/save.lua")
 dofile(MP.."/mapgen.lua")
+dofile(MP.."/validate.lua")
 
 -- hud stuff
 dofile(MP.."/hud.lua")
