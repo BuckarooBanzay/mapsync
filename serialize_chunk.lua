@@ -32,7 +32,7 @@ function mapsync.serialize_chunk(chunk_pos, filename)
     end
 
     -- open zip for writing
-    local f = global_env.io.open(filename, "w")
+    local f = global_env.io.open(filename, "wb")
     if not f then
         return false, "could not open '" .. filename .. "'"
     end

@@ -5,7 +5,7 @@ local insert, byte, decode_uint16 = table.insert, string.byte, mapsync.decode_ui
 
 -- parses an exported chunk file
 function mapsync.parse_chunk(filename)
-    local f = global_env.io.open(filename)
+    local f = global_env.io.open(filename, "rb")
     local zip, err_msg = mtzip.unzip(f)
     if not zip then
         return false, err_msg
