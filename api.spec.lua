@@ -1,5 +1,3 @@
-local pos = { x=0, y=0, z=0 }
-mtt.emerge_area(pos, pos)
 
 mtt.register("backend selection", function(callback)
     local path = minetest.get_worldpath() .. "/mymap"

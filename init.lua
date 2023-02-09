@@ -28,6 +28,7 @@ dofile(MP.."/privs.lua")
 
 -- backends
 dofile(MP.."/backend_fs.lua")
+loadfile(MP.."/backend_patch.lua")(global_env)
 
 -- utilities / helpers
 dofile(MP.."/pos_iterator.lua")
@@ -58,8 +59,10 @@ loadfile(MP.."/deserialize_chunk.lua")(global_env)
 
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
+	dofile(MP.."/init.spec.lua")
 	dofile(MP.."/functions.spec.lua")
 	dofile(MP.."/diff.spec.lua")
+	dofile(MP.."/backend_patch.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
 end
