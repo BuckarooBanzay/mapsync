@@ -31,7 +31,7 @@ local function create_mapblock(mapblock_pos, mapblock, callback)
                     node.meta = mapblock.metadata.meta[rel_pos_str]
                 end
                 if mapblock.metadata.meta then
-                    node.timers = mapblock.metadata.timers[rel_pos_str]
+                    node.timer = mapblock.metadata.timers[rel_pos_str]
                 end
             end
 

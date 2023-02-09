@@ -45,5 +45,16 @@ mtt.register("diff", function(callback)
     end
     assert(changes == 2)
 
+    -- apply changes to another chunk
+    chunk_pos = { x=0, y=1, z=0 }
+
+    success = mapsync.apply_diff(chunk_pos, changed_nodes)
+    assert(success)
+
+    assert(minetest.get_node({ x=10, y=80, z=0 }).name == "default:mese")
+    assert(minetest.get_node({ x=10, y=81, z=0 }).name == "default:chest")
+    meta = minetest.get_meta({ x=10, y=81, z=0 })
+    assert(meta:get_int("x") == 10)
+
     callback()
 end)
