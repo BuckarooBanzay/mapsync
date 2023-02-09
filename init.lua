@@ -26,6 +26,9 @@ end
 dofile(MP.."/api.lua")
 dofile(MP.."/privs.lua")
 
+-- backends
+dofile(MP.."/backend_fs.lua")
+
 -- utilities / helpers
 dofile(MP.."/pos_iterator.lua")
 dofile(MP.."/encoding.lua")
