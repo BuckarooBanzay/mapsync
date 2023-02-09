@@ -1,5 +1,5 @@
 
-function mapsync.extend_backend_def(backend_def)
+mapsync.register_backend_type("fs", function(backend_def)
     assert(type(backend_def.path) == "string")
 
     backend_def.get_path = backend_def.get_path or function(chunk_pos)
@@ -32,4 +32,4 @@ function mapsync.extend_backend_def(backend_def)
         end
         return chunks
     end
-end
+end)

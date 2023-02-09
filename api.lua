@@ -1,12 +1,19 @@
 
+-- type => fn(backend_def)
+local backend_types = {}
+
+function mapsync.register_backend_type(name, fn)
+    backend_types[name] = fn
+end
+
 -- name => backend_def
 local backends = {}
 
 -- register a map backend
 function mapsync.register_backend(name, backend_def)
-    if backend_def.type == "fs" then
-        -- default backend for now
-        mapsync.extend_backend_def(backend_def)
+    local backend_fn = backend_types[backend_def.type]
+    if type(backend_fn) == "function" then
+        backend_fn(backend_def)
     else
         error("unknown backend type: '" .. backend_def.type .. "' for backend '" .. name .. "'")
     end
