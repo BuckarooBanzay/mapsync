@@ -1,14 +1,71 @@
-local global_env = ...
+local c_air = minetest.get_content_id("air")
 
-local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, f)
+local function create_mapblock(mapblock_pos, mapblock, callback)
+    assert(#mapblock.node_ids == 4096)
+    assert(#mapblock.param1 == 4096)
+    assert(#mapblock.param2 == 4096)
+
+    for i=1,4096 do
+        -- relative position in the mapblock
+        local rel_pos = mapsync.mapblock_index_to_pos(i)
+
+        -- relative position in the chunk
+        local rel_chunk_pos = vector.add(rel_pos, vector.multiply(mapblock_pos, 16))
+
+        local nodeid = mapblock.node_ids[i]
+        if nodeid ~= c_air then
+            local nodename = minetest.get_name_from_content_id(nodeid)
+
+            local node = {
+                x=rel_chunk_pos.x,
+                y=rel_chunk_pos.y,
+                z=rel_chunk_pos.z,
+                name = nodename,
+                param2 = mapblock.param2[i],
+                param1 = mapblock.param1[i]
+            }
+
+            if mapblock.metadata then
+                local rel_pos_str = minetest.pos_to_string(rel_pos)
+                if mapblock.metadata.meta then
+                    node.meta = mapblock.metadata.meta[rel_pos_str]
+                end
+                if mapblock.metadata.meta then
+                    node.timers = mapblock.metadata.timers[rel_pos_str]
+                end
+            end
+
+            callback(node)
+        end
+    end
+end
+
+local function air_mapblock(mapblock_pos, callback)
+    for i=1,4096 do
+        -- relative position in the mapblock
+        local rel_pos = mapsync.mapblock_index_to_pos(i)
+        -- relative position in the chunk
+        local rel_chunk_pos = vector.add(rel_pos, vector.multiply(mapblock_pos, 16))
+
+        local node = {
+            x=rel_chunk_pos.x,
+            y=rel_chunk_pos.y,
+            z=rel_chunk_pos.z,
+            name = "air",
+            param2 = 0
+        }
+
+        callback(node)
+    end
+end
+
+local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback, opts)
     assert(#baseline_mapblock.node_ids == 4096)
     assert(#baseline_mapblock.param1 == 4096)
     assert(#baseline_mapblock.param2 == 4096)
     assert(#mapblock.node_ids == 4096)
     assert(#mapblock.param1 == 4096)
     assert(#mapblock.param2 == 4096)
-
-    print(dump(mapblock.metadata))
 
     for i=1,4096 do
         -- relative position in the mapblock
@@ -29,7 +86,8 @@ local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, f)
         end
 
         -- param1
-        if baseline_mapblock.param1[i] ~= mapblock.param1[i] then
+        local param1_delta = math.abs(baseline_mapblock.param1[i] - mapblock.param1[i])
+        if param1_delta > opts.param1_max_delta then
             node.param1 = mapblock.param1[i]
             changed = true
         end
@@ -52,22 +110,22 @@ local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, f)
             changed = true
         end
 
-        -- TODO: node timers
+        local timer = mapblock.metadata and mapblock.metadata.timers and mapblock.metadata.timers[rel_pos_str]
+        if timer then
+            node.timer = timer
+        end
 
         if changed then
-            print(dump(node))
-            f:write(minetest.write_json(node), "\n")
+            callback(node)
         end
     end
 
     return true
 end
 
-function mapsync.create_diff(baseline_chunk, chunk_pos, filename)
-    local f = global_env.io.open(filename, "w")
-    if not f then
-        return false, "could not open '" .. filename .. "'"
-    end
+function mapsync.create_diff(baseline_chunk, chunk_pos, callback, opts)
+    opts = opts or {}
+    opts.param1_max_delta = opts.param1_max_delta or 0
 
     local node_mapping = {}
     local mb_pos1, mb_pos2 = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
@@ -82,22 +140,23 @@ function mapsync.create_diff(baseline_chunk, chunk_pos, filename)
 
                 if blockdata.empty and baseline_mapblock then
                     -- block removed
+                    air_mapblock(mapblock_pos, callback)
+
                 elseif not blockdata.empty and not baseline_mapblock then
                     -- block added
-                elseif blockdata.empty and not baseline_mapblock then
-                    -- nothing here, nothing changed
-                else
+                    create_mapblock(mapblock_pos, blockdata, callback)
+
+                elseif not blockdata.empty and baseline_mapblock then
                     -- both blocks exist, compare
-                    local success, err_msg = diff_mapblock(rel_mapblock_pos, baseline_mapblock, blockdata, f)
+                    local success, err_msg = diff_mapblock(rel_mapblock_pos,baseline_mapblock,blockdata,callback,opts)
                     if not success then
                         return false, err_msg
                     end
+
                 end
             end
         end
     end
-
-    f:close()
 
     return true
 end

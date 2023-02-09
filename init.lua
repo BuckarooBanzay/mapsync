@@ -34,7 +34,7 @@ dofile(MP.."/deserialize_mapblock.lua")
 dofile(MP.."/localize_nodeids.lua")
 
 -- diff / patch
-loadfile(MP.."/create_diff.lua")(global_env)
+dofile(MP.."/create_diff.lua")
 dofile(MP.."/apply_diff.lua")
 
 -- save/load
