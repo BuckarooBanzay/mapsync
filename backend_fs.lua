@@ -1,24 +1,22 @@
 
-mapsync.register_backend_type("fs", function(backend_def)
-    assert(type(backend_def.path) == "string")
+local function get_path(backend_def, chunk_pos)
+    return backend_def.path .. "/chunk_" .. minetest.pos_to_string(chunk_pos) .. ".zip"
+end
 
-    backend_def.get_path = backend_def.get_path or function(chunk_pos)
-        return backend_def.path .. "/chunk_" .. minetest.pos_to_string(chunk_pos) .. ".zip"
-    end
+mapsync.register_backend_handler("fs", {
+    save_chunk = function(backend_def, chunk_pos)
+        return mapsync.serialize_chunk(chunk_pos, get_path(backend_def, chunk_pos))
+    end,
 
-    backend_def.save_chunk = backend_def.save_chunk or function(chunk_pos)
-        return mapsync.serialize_chunk(chunk_pos, backend_def.get_path(chunk_pos))
-    end
+    load_chunk = function(backend_def, chunk_pos, vmanip)
+        return mapsync.deserialize_chunk(chunk_pos, get_path(backend_def, chunk_pos), vmanip)
+    end,
 
-    backend_def.load_chunk = backend_def.load_chunk or function(chunk_pos, vmanip)
-        return mapsync.deserialize_chunk(chunk_pos, backend_def.get_path(chunk_pos), vmanip)
-    end
+    get_manifest = function(backend_def, chunk_pos)
+        return mapsync.get_manifest(get_path(backend_def, chunk_pos))
+    end,
 
-    backend_def.get_manifest = backend_def.get_manifest or function(chunk_pos)
-        return mapsync.get_manifest(backend_def.get_path(chunk_pos))
-    end
-
-    backend_def.list_chunks = backend_def.list_chunks or function()
+    list_chunks = function(backend_def)
         local files = minetest.get_dir_list(backend_def.path, false)
         local chunks = {}
         for _, filename in ipairs(files) do
@@ -32,4 +30,4 @@ mapsync.register_backend_type("fs", function(backend_def)
         end
         return chunks
     end
-end)
+})

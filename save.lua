@@ -65,10 +65,11 @@ minetest.register_chatcommand("mapsync_save", {
 })
 
 function mapsync.save(chunk_pos)
-    local backend = mapsync.select_backend(chunk_pos)
-    if not backend then
+    local backend_def = mapsync.select_backend(chunk_pos)
+    if not backend_def then
         return true, "No backend available"
     end
 
-    return backend.save_chunk(chunk_pos)
+    local handler = mapsync.select_handler(backend_def)
+    return handler.save_chunk(backend_def, chunk_pos)
 end

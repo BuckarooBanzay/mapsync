@@ -10,16 +10,19 @@ mtt.register("backend selection", function(callback)
         end
     })
 
-    local backend = mapsync.select_backend({x=0, y=0, z=0})
-    assert(backend.name == "my-backend")
-    assert(backend.save_chunk({x=0, y=0, z=0}))
+    local backend_def = mapsync.select_backend({x=0, y=0, z=0})
+    local handler = mapsync.select_handler(backend_def)
 
-    local chunks = backend.list_chunks()
+    assert(handler)
+    assert(backend_def.name == "my-backend")
+    assert(handler.save_chunk(backend_def, {x=0, y=0, z=0}))
+
+    local chunks = handler.list_chunks(backend_def)
     assert(#chunks >= 1)
     assert(vector.equals(chunks[1], {x=0,y=0,z=0}))
 
-    backend = mapsync.select_backend({x=0, y=10, z=0})
-    assert(not backend)
+    backend_def = mapsync.select_backend({x=0, y=10, z=0})
+    assert(not backend_def)
 
     mapsync.unregister_backend("my-backend")
     callback()

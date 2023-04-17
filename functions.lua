@@ -65,13 +65,15 @@ end
 
 -- returns the mtime of the backend chunk
 function mapsync.get_backend_chunk_mtime(chunk_pos)
-	local backend = mapsync.select_backend(chunk_pos)
-    if not backend then
+	local backend_def = mapsync.select_backend(chunk_pos)
+    if not backend_def then
         return
     end
 
+	local handler = mapsync.select_handler(backend_def)
+
     -- get manifest
-    local manifest = backend.get_manifest(chunk_pos)
+    local manifest = handler.get_manifest(backend_def, chunk_pos)
     if not manifest then
         return
     end
