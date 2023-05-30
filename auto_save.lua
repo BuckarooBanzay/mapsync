@@ -189,3 +189,13 @@ if minetest.get_modpath("screwdriver2") and minetest.registered_items["screwdriv
 		end
 	})
 end
+
+if minetest.get_modpath("travelnet") and type(travelnet.on_receive_fields) == "function" then
+	local old_on_receive_fields = travelnet.on_receive_fields
+	function travelnet.on_receive_fields(pos, _, fields, player)
+		if pos then
+			mapsync.mark_changed(pos)
+		end
+		return old_on_receive_fields(pos, _, fields, player)
+	end
+end
