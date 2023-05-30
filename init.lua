@@ -27,7 +27,7 @@ dofile(MP.."/api.lua")
 dofile(MP.."/privs.lua")
 
 -- backends
-dofile(MP.."/backend_fs.lua")
+loadfile(MP.."/backend_fs.lua")(global_env)
 loadfile(MP.."/backend_patch.lua")(global_env)
 
 -- utilities / helpers

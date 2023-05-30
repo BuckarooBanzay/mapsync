@@ -1,3 +1,4 @@
+local global_env = ...
 
 local function get_path(prefix, chunk_pos)
     return prefix .. "/chunk_" .. minetest.pos_to_string(chunk_pos) .. ".zip"
@@ -41,13 +42,13 @@ mapsync.register_data_backend_handler("fs", {
     end,
 
     save_data = function(data_backend_def, key, value)
-        local f = assert(io.open(data_backend_def.path .. "/" .. key, "w"))
+        local f = assert(global_env.io.open(data_backend_def.path .. "/" .. key, "w"))
         f:write(minetest.serialize(value))
         f:close()
     end,
 
     load_data = function(data_backend_def, key)
-        local f = io.open(data_backend_def.path .. "/" .. key, "r")
+        local f = global_env.io.open(data_backend_def.path .. "/" .. key, "r")
         if not f then
             return
         end
