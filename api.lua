@@ -3,8 +3,9 @@
 local backend_handlers = {}
 
 function mapsync.register_backend_handler(name, handler)
-    -- default to no-op validator
+    -- default to no-op functions
     handler.validate_config = handler.validate_config or function() end
+    handler.init = handler.init or function() end
 
     backend_handlers[name] = handler
 end
@@ -30,6 +31,10 @@ function mapsync.register_backend(name, backend_def)
     -- validate config
     handler.validate_config(backend_def)
 
+    -- init backend def
+    handler.init(backend_def)
+
+    -- register
     backends[name] = backend_def
 end
 
