@@ -32,7 +32,8 @@ function mapsync.apply_diff(chunk_pos, changed_nodes)
         end
 
         if changed_node.param1 ~= nil then
-            param1[index] = changed_node.param1
+            -- use max light from source or target
+            param1[index] = math.max(param1[index], changed_node.param1)
         end
 
         if changed_node.param2 ~= nil then
