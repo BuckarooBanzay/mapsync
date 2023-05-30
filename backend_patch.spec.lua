@@ -22,8 +22,8 @@ mtt.register("patch backend", function(callback)
 
     mapsync.register_backend("my-patched-backend", {
         type = "patch",
-        shadow_path = path,
-        path = patch_path
+        path = path,
+        patch_path = patch_path
     })
 
     minetest.set_node({ x=10, y=10, z=10 }, { name = "default:obsidianbrick" })

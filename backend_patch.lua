@@ -10,12 +10,12 @@ end
 
 mapsync.register_backend_handler("patch", {
     validate_config = function(backend_def)
+        assert(type(backend_def.patch_path) == "string")
         assert(type(backend_def.path) == "string")
-        assert(type(backend_def.shadow_path) == "string")
     end,
     save_chunk = function(backend_def, chunk_pos)
-        local baseline_chunk = mapsync.parse_chunk(get_path(backend_def.shadow_path, chunk_pos))
-        local filename = get_json_path(backend_def.path, chunk_pos)
+        local baseline_chunk = mapsync.parse_chunk(get_path(backend_def.path, chunk_pos))
+        local filename = get_json_path(backend_def.patch_path, chunk_pos)
         local f = global_env.io.open(filename, "w")
 
         mapsync.create_diff(baseline_chunk, chunk_pos, function(changed_node)
@@ -27,12 +27,12 @@ mapsync.register_backend_handler("patch", {
     end,
     load_chunk = function(backend_def, chunk_pos, vmanip)
         -- load baseline chunk
-        local success, msg = mapsync.deserialize_chunk(chunk_pos, get_path(backend_def.shadow_path, chunk_pos), vmanip)
+        local success, msg = mapsync.deserialize_chunk(chunk_pos, get_path(backend_def.path, chunk_pos), vmanip)
         if not success then
             return success, msg
         end
         -- load diff if available
-        local f = io.open(get_json_path(backend_def.path, chunk_pos), "r")
+        local f = io.open(get_json_path(backend_def.patch_path, chunk_pos), "r")
         if not f then
             -- no diff
             return true
@@ -51,11 +51,11 @@ mapsync.register_backend_handler("patch", {
         return mapsync.apply_diff(chunk_pos, changed_nodes)
     end,
     get_manifest = function(backend_def, chunk_pos)
-        mapsync.get_manifest(get_path(backend_def.shadow_path, chunk_pos))
+        mapsync.get_manifest(get_path(backend_def.path, chunk_pos))
     end,
     apply_patches = function(backend_def, callback)
         -- load all chunks and save back to fs
-        local files = minetest.get_dir_list(backend_def.path, false)
+        local files = minetest.get_dir_list(backend_def.patch_path, false)
 
         -- collect all chunks
         local chunk_pos_list = {}
@@ -74,7 +74,7 @@ mapsync.register_backend_handler("patch", {
             mapsync.delete_chunk(chunk_pos)
             mapsync.emerge_chunk(chunk_pos, function()
                 -- save emerged chunk
-                mapsync.serialize_chunk(chunk_pos, get_path(backend_def.shadow_path, chunk_pos))
+                mapsync.serialize_chunk(chunk_pos, get_path(backend_def.path, chunk_pos))
 
                 emerge_count = emerge_count + 1
                 if emerge_count < #chunk_pos_list then
