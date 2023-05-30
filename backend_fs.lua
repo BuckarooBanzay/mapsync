@@ -42,13 +42,13 @@ mapsync.register_data_backend_handler("fs", {
     end,
 
     save_data = function(data_backend_def, key, value)
-        local f = assert(global_env.io.open(data_backend_def.path .. "/" .. key, "w"))
+        local f = assert(global_env.io.open(data_backend_def.path .. "/" .. key .. ".lua", "w"))
         f:write(minetest.serialize(value))
         f:close()
     end,
 
     load_data = function(data_backend_def, key)
-        local f = global_env.io.open(data_backend_def.path .. "/" .. key, "r")
+        local f = global_env.io.open(data_backend_def.path .. "/" .. key .. ".lua", "r")
         if not f then
             return
         end
