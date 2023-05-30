@@ -2,8 +2,11 @@
 -- type => handler_def
 local backend_handlers = {}
 
-function mapsync.register_backend_handler(name, fn)
-    backend_handlers[name] = fn
+function mapsync.register_backend_handler(name, handler)
+    -- default to no-op validator
+    handler.validate_config = handler.validate_config or function() end
+
+    backend_handlers[name] = handler
 end
 
 function mapsync.select_handler(backend_def)
@@ -23,6 +26,10 @@ function mapsync.register_backend(name, backend_def)
     backend_def.name = name
     -- default to always-on backend if no selector specified
     backend_def.select = backend_def.select or function() return true end
+
+    -- validate config
+    handler.validate_config(backend_def)
+
     backends[name] = backend_def
 end
 

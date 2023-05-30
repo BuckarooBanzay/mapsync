@@ -9,6 +9,13 @@ local function get_path(backend_def, chunk_pos)
 end
 
 mapsync.register_backend_handler("patch", {
+    validate_config = function(backend_def)
+        assert(type(backend_def.path) == "string")
+        assert(type(backend_def.shadow) == "string")
+        local shadow_def = mapsync.get_backend(backend_def.shadow)
+        assert(shadow_def)
+        assert(shadow_def.type == "fs")
+    end,
     save_chunk = function(backend_def, chunk_pos)
         local baseline_chunk = mapsync.parse_chunk(get_path(backend_def, chunk_pos))
         local filename = get_json_path(backend_def, chunk_pos)
