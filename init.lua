@@ -47,6 +47,7 @@ dofile(MP.."/auto_update.lua")
 dofile(MP.."/save.lua")
 dofile(MP.."/mapgen.lua")
 dofile(MP.."/validate.lua")
+dofile(MP.."/data.lua")
 
 -- hud stuff
 dofile(MP.."/hud.lua")
@@ -57,10 +58,16 @@ loadfile(MP.."/serialize_chunk.lua")(global_env)
 loadfile(MP.."/parse_chunk.lua")(global_env)
 loadfile(MP.."/deserialize_chunk.lua")(global_env)
 
+-- mod integrations
+if minetest.get_modpath("travelnet") then
+	dofile(MP.."/integrations/travelnet.lua")
+end
+
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/init.spec.lua")
 	dofile(MP.."/functions.spec.lua")
+	dofile(MP.."/data.spec.lua")
 	dofile(MP.."/diff.spec.lua")
 	dofile(MP.."/backend_patch.spec.lua")
 	dofile(MP.."/api.spec.lua")

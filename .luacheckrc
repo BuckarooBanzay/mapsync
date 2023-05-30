@@ -1,7 +1,8 @@
 globals = {
 	"mapsync",
 	"worldedit",
-	"minetest"
+	"minetest",
+	"travelnet"
 }
 
 read_globals = {

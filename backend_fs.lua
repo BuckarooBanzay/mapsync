@@ -34,3 +34,25 @@ mapsync.register_backend_handler("fs", {
         return chunks
     end
 })
+
+mapsync.register_data_backend_handler("fs", {
+    validate_config = function(data_backend_def)
+        assert(type(data_backend_def.path) == "string")
+    end,
+
+    save_data = function(data_backend_def, key, value)
+        local f = assert(io.open(data_backend_def.path .. "/" .. key, "w"))
+        f:write(minetest.serialize(value))
+        f:close()
+    end,
+
+    load_data = function(data_backend_def, key)
+        local f = io.open(data_backend_def.path .. "/" .. key, "r")
+        if not f then
+            return
+        end
+        local value = minetest.deserialize(f:read("*all"))
+        f:close()
+        return value
+    end
+})

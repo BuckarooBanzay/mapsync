@@ -14,6 +14,17 @@ function mapsync.select_handler(backend_def)
     return backend_handlers[backend_def.type]
 end
 
+-- type => handler_def
+local data_backend_handlers = {}
+
+function mapsync.register_data_backend_handler(name, handler)
+    data_backend_handlers[name] = handler
+end
+
+function mapsync.select_data_handler(data_backend_def)
+    return data_backend_handlers[data_backend_def.type]
+end
+
 -- name => backend_def
 local backends = {}
 
@@ -71,4 +82,15 @@ function mapsync.select_backend(chunk_pos)
             return backend_def
         end
     end
+end
+
+-- singleton
+local data_backend_def
+
+function mapsync.register_data_backend(def)
+    data_backend_def = def
+end
+
+function mapsync.get_data_backend()
+    return data_backend_def
 end
