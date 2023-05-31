@@ -61,9 +61,13 @@ local function update_player_hud(player)
 	end
 
 	-- provide some info about the current chunk and available backend
-	local txt2 =
-		"Chunk: " .. minetest.pos_to_string(chunk_pos) ..
-		", backend: '" .. (backend and backend.name or "<none>") .. "'"
+	local txt2 = string.format("Chunk: %s, Backend: ", minetest.pos_to_string(chunk_pos))
+
+	if backend then
+		txt2 = txt2 .. string.format("'%s' [%s]", backend.name, backend.type)
+	else
+		txt2 = txt2 .. "<none>"
+	end
 
 	if backend then
 		-- backend available
