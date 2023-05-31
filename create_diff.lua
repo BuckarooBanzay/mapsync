@@ -59,7 +59,7 @@ local function air_mapblock(mapblock_pos, callback)
     end
 end
 
-local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback, opts)
+local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback)
     assert(#baseline_mapblock.node_ids == 4096)
     assert(#baseline_mapblock.param1 == 4096)
     assert(#baseline_mapblock.param2 == 4096)
@@ -116,10 +116,7 @@ local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback
     return true
 end
 
-function mapsync.create_diff(baseline_chunk, chunk_pos, callback, opts)
-    opts = opts or {}
-    opts.param1_max_delta = opts.param1_max_delta or 0
-
+function mapsync.create_diff(baseline_chunk, chunk_pos, callback)
     local node_mapping = {}
     local mb_pos1, mb_pos2 = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
 
@@ -141,7 +138,7 @@ function mapsync.create_diff(baseline_chunk, chunk_pos, callback, opts)
 
                 elseif not blockdata.empty and baseline_mapblock then
                     -- both blocks exist, compare
-                    local success, err_msg = diff_mapblock(rel_mapblock_pos,baseline_mapblock,blockdata,callback,opts)
+                    local success, err_msg = diff_mapblock(rel_mapblock_pos,baseline_mapblock,blockdata,callback)
                     if not success then
                         return false, err_msg
                     end

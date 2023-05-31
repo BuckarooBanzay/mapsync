@@ -24,10 +24,7 @@ mtt.register("diff", function(callback)
     end
 
     -- create and validate diff
-    local success = mapsync.create_diff(baseline_chunk, chunk_pos, node_callback, {
-        -- ignore light-changes (artificial and natural)
-        param1_max_delta = 256
-    })
+    local success = mapsync.create_diff(baseline_chunk, chunk_pos, node_callback)
     assert(success)
 
     local changes = 0
