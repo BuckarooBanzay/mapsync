@@ -85,13 +85,6 @@ local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback
             changed = true
         end
 
-        -- param1
-        local param1_delta = math.abs(baseline_mapblock.param1[i] - mapblock.param1[i])
-        if param1_delta > opts.param1_max_delta then
-            node.param1 = mapblock.param1[i]
-            changed = true
-        end
-
         -- param2
         if baseline_mapblock.param2[i] ~= mapblock.param2[i] then
             node.param2 = mapblock.param2[i]

@@ -10,7 +10,6 @@ function mapsync.apply_diff(chunk_pos, changed_nodes)
 	local area = VoxelArea:new({MinEdge=e1, MaxEdge=e2})
 
 	local node_data = manip:get_data()
-	local param1 = manip:get_light_data()
 	local param2 = manip:get_param2_data()
 
     for _, changed_node in ipairs(changed_nodes) do
@@ -31,11 +30,6 @@ function mapsync.apply_diff(chunk_pos, changed_nodes)
             -- TODO: placeholder if not found
         end
 
-        if changed_node.param1 ~= nil then
-            -- use max light from source or target
-            param1[index] = math.max(param1[index], changed_node.param1)
-        end
-
         if changed_node.param2 ~= nil then
             param2[index] = changed_node.param2
         end
@@ -52,9 +46,8 @@ function mapsync.apply_diff(chunk_pos, changed_nodes)
 
     -- write back to map
     manip:set_data(node_data)
-	manip:set_light_data(param1)
 	manip:set_param2_data(param2)
-    manip:write_to_map(false)
+    manip:write_to_map(true)
 
     return true
 end
