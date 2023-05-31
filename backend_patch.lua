@@ -87,3 +87,45 @@ mapsync.register_backend_handler("patch", {
         end
     end
 })
+
+
+minetest.register_chatcommand("mapsync_apply_patches", {
+    description = "applies all the patches in given backend (defaults to the one at the current position)",
+    params = "[backend-name]",
+    privs = { mapsync = true },
+	func = function(name, backend_name)
+        local player = minetest.get_player_by_name(name)
+        if not player then
+            return
+        end
+
+        local pos = player:get_pos()
+
+        local backend_def
+        if backend_name and backend_name ~= "" then
+            backend_def = mapsync.get_backend(backend_name)
+            if not backend_def then
+                return true, "Backend not found: '" .. backend_name .. "'"
+            end
+        else
+            local chunk_pos = mapsync.get_chunkpos(pos)
+            backend_def = mapsync.select_backend(chunk_pos)
+            if not backend_def then
+                return true, "Backend for current position not found"
+            end
+        end
+
+        if backend_def.type ~= "patch" then
+            return true, "Backend type is not of type 'patch'"
+        end
+
+        local handler = mapsync.select_handler(backend_def)
+
+        -- apply patches back to shadowed backend
+        handler.apply_patches(backend_def, function(chunk_count)
+            minetest.chat_send_player(name, "Patching done with " .. chunk_count .. " chunk(s)")
+        end)
+
+        return true, "Patching started"
+	end
+})
