@@ -2,7 +2,6 @@ local c_air = minetest.get_content_id("air")
 
 local function create_mapblock(mapblock_pos, mapblock, callback)
     assert(#mapblock.node_ids == 4096)
-    assert(#mapblock.param1 == 4096)
     assert(#mapblock.param2 == 4096)
 
     for i=1,4096 do
@@ -21,8 +20,7 @@ local function create_mapblock(mapblock_pos, mapblock, callback)
                 y=rel_chunk_pos.y,
                 z=rel_chunk_pos.z,
                 name = nodename,
-                param2 = mapblock.param2[i],
-                param1 = mapblock.param1[i]
+                param2 = mapblock.param2[i]
             }
 
             if mapblock.metadata then
@@ -61,10 +59,8 @@ end
 
 local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback)
     assert(#baseline_mapblock.node_ids == 4096)
-    assert(#baseline_mapblock.param1 == 4096)
     assert(#baseline_mapblock.param2 == 4096)
     assert(#mapblock.node_ids == 4096)
-    assert(#mapblock.param1 == 4096)
     assert(#mapblock.param2 == 4096)
 
     for i=1,4096 do

@@ -1,8 +1,8 @@
 
 function mapsync.apply_diff(chunk_pos, changed_nodes)
     local min_mb, max_mb = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
-    local base_pos = mapsync.get_mapblock_bounds_from_mapblock(min_mb)
-    local _, max_pos = mapsync.get_mapblock_bounds_from_mapblock(max_mb)
+    local base_pos = mapsync.get_node_bounds_from_mapblock(min_mb)
+    local _, max_pos = mapsync.get_node_bounds_from_mapblock(max_mb)
 
     -- load chunk
     local manip = minetest.get_voxel_manip()

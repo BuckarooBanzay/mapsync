@@ -46,7 +46,18 @@ mapsync.register_backend_handler("patch", {
         f:close()
 
         -- apply diff
-        return mapsync.apply_diff(chunk_pos, changed_nodes)
+        local success, msg = mapsync.apply_diff(chunk_pos, changed_nodes)
+        if not success then
+            return false, msg
+        end
+
+        -- fix lighting
+        local mb_pos1, mb_pos2 = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
+        local pos1 = mapsync.get_node_bounds_from_mapblock(mb_pos1)
+        local _, pos2 = mapsync.get_node_bounds_from_mapblock(mb_pos2)
+        minetest.fix_light(pos1, pos2)
+
+        return true
     end,
     get_manifest = function(backend_def, chunk_pos)
         mapsync.get_manifest(get_path(backend_def.path, chunk_pos))

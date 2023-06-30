@@ -37,7 +37,7 @@ local insert = table.insert
 function mapsync.serialize_mapblock(mapblock_pos, node_mapping)
 	node_mapping = node_mapping or {}
 
-	local pos1, pos2 = mapsync.get_mapblock_bounds_from_mapblock(mapblock_pos)
+	local pos1, pos2 = mapsync.get_node_bounds_from_mapblock(mapblock_pos)
 	assert((pos2.x - pos1.x) == 15)
 	assert((pos2.y - pos1.y) == 15)
 	assert((pos2.z - pos1.z) == 15)

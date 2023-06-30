@@ -18,8 +18,8 @@ mtt.register("serialize and deserialize chunk", function(callback)
 
     local vmanip = minetest.get_voxel_manip()
     local mb_pos1, mb_pos2 = mapsync.get_mapblock_bounds_from_chunk(target_chunk_pos)
-    local pos1 = mapsync.get_mapblock_bounds_from_mapblock(mb_pos1)
-    local _, pos2 = mapsync.get_mapblock_bounds_from_mapblock(mb_pos2)
+    local pos1 = mapsync.get_node_bounds_from_mapblock(mb_pos1)
+    local _, pos2 = mapsync.get_node_bounds_from_mapblock(mb_pos2)
 
     vmanip:read_from_map(pos1, pos2)
 

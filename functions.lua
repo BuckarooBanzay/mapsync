@@ -47,7 +47,7 @@ function mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
 	return min, max
 end
 
-function mapsync.get_mapblock_bounds_from_mapblock(mapblock)
+function mapsync.get_node_bounds_from_mapblock(mapblock)
 	local min = vector.multiply(mapblock, 16)
 	local max = vector.add(min, 15)
 	return min, max
@@ -85,8 +85,8 @@ end
 -- deletes a chunk from the ingame map
 function mapsync.delete_chunk(chunk_pos)
 	local mapblock_min, mapblock_max = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
-    local min = mapsync.get_mapblock_bounds_from_mapblock(mapblock_min)
-    local _, max = mapsync.get_mapblock_bounds_from_mapblock(mapblock_max)
+    local min = mapsync.get_node_bounds_from_mapblock(mapblock_min)
+    local _, max = mapsync.get_node_bounds_from_mapblock(mapblock_max)
 
 	mapsync.storage:set_string(minetest.pos_to_string(chunk_pos), "")
     minetest.delete_area(min, max)
@@ -95,8 +95,8 @@ end
 -- emerges a chunk
 function mapsync.emerge_chunk(chunk_pos, callback)
 	local mapblock_min, mapblock_max = mapsync.get_mapblock_bounds_from_chunk(chunk_pos)
-	local min = mapsync.get_mapblock_bounds_from_mapblock(mapblock_min)
-	local _, max = mapsync.get_mapblock_bounds_from_mapblock(mapblock_max)
+	local min = mapsync.get_node_bounds_from_mapblock(mapblock_min)
+	local _, max = mapsync.get_node_bounds_from_mapblock(mapblock_max)
 
 	minetest.emerge_area(min, max, function(_, _, calls_remaining)
 		if calls_remaining == 0 and type(callback) == "function" then
