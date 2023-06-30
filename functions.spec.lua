@@ -14,3 +14,47 @@ mtt.register("mapblock_index_to_pos", function(callback)
 
     callback()
 end)
+
+mtt.register("mapsync.deep_compare", function(callback)
+    assert(mapsync.deep_compare(1,1))
+    assert(not mapsync.deep_compare(2,1))
+
+    assert(mapsync.deep_compare(nil, nil))
+    assert(not mapsync.deep_compare(nil, {}))
+
+    assert(mapsync.deep_compare({
+        x = 1
+    }, {
+        x = 1
+    }))
+    assert(not mapsync.deep_compare({
+        x = 1
+    }, {
+        x = 1,
+        y = 2
+    }))
+
+    assert(mapsync.deep_compare({
+        meta = {
+            fields = {
+                highscore_name = "s03"
+            },
+            inventory = nil
+        },
+        x = 34,
+        y = 36,
+        z = 72
+    }, {
+        meta = {
+            fields = {
+                highscore_name = "s03"
+            },
+            inventory = nil
+        },
+        x = 34,
+        y = 36,
+        z = 72
+    }))
+
+    callback()
+end)

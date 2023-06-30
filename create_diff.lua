@@ -92,11 +92,20 @@ local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback
         local baseline_meta = baseline_mapblock.metadata
             and baseline_mapblock.metadata.meta
             and baseline_mapblock.metadata.meta[rel_pos_str]
-        local new_meta = mapblock.metadata and mapblock.metadata.meta and mapblock.metadata.meta[rel_pos_str]
-        if new_meta and not mapsync.deep_compare(baseline_meta, new_meta) then
-            -- metadata not equal or new
-            node.meta = new_meta
-            changed = true
+
+        local new_meta = mapblock.metadata
+            and mapblock.metadata.meta
+            and mapblock.metadata.meta[rel_pos_str]
+
+        if new_meta then
+            -- add empty inventory to baseline if not already there
+            baseline_meta.inventory = baseline_meta.inventory or {}
+
+            if not mapsync.deep_compare(baseline_meta, new_meta) then
+                -- metadata not equal or new
+                node.meta = new_meta
+                changed = true
+            end
         end
 
         local timer = mapblock.metadata and mapblock.metadata.timers and mapblock.metadata.timers[rel_pos_str]
