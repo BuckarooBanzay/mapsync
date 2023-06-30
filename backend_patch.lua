@@ -51,7 +51,7 @@ mapsync.register_backend_handler("patch", {
     get_manifest = function(backend_def, chunk_pos)
         mapsync.get_manifest(get_path(backend_def.path, chunk_pos))
     end,
-    apply_patches = function(backend_def, callback)
+    apply_patches = function(backend_def, callback, progress_callback)
         -- load all chunks and save back to fs
         local files = minetest.get_dir_list(backend_def.patch_path, false)
 
@@ -68,7 +68,7 @@ mapsync.register_backend_handler("patch", {
         end
 
         local emerge_count = 0
-        for _, chunk_pos in ipairs(chunk_pos_list) do
+        for i, chunk_pos in ipairs(chunk_pos_list) do
             mapsync.delete_chunk(chunk_pos)
             mapsync.emerge_chunk(chunk_pos, function()
                 -- save emerged chunk
@@ -77,6 +77,11 @@ mapsync.register_backend_handler("patch", {
                 -- remove patch file
                 local patch_path = get_json_path(backend_def.patch_path, chunk_pos)
                 global_env.os.remove(patch_path)
+
+                -- report progress
+                if type(progress_callback) == "function" then
+                    progress_callback(chunk_pos, #chunk_pos_list, i)
+                end
 
                 emerge_count = emerge_count + 1
                 if emerge_count < #chunk_pos_list then
@@ -126,6 +131,9 @@ minetest.register_chatcommand("mapsync_apply_patches", {
         -- apply patches back to shadowed backend
         handler.apply_patches(backend_def, function(chunk_count)
             minetest.chat_send_player(name, "Patching done with " .. chunk_count .. " chunk(s)")
+        end, function(chunk_pos, total_count, current_count)
+            minetest.chat_send_player(name, "Patched chunk " .. minetest.pos_to_string(chunk_pos) ..
+                " progress: " .. current_count .. "/" .. total_count)
         end)
 
         return true, "Patching started"
