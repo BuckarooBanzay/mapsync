@@ -16,13 +16,20 @@ mapsync.register_backend_handler("patch", {
     save_chunk = function(backend_def, chunk_pos)
         local baseline_chunk = mapsync.parse_chunk(get_path(backend_def.path, chunk_pos))
         local filename = get_json_path(backend_def.patch_path, chunk_pos)
-        local f = global_env.io.open(filename, "w")
+        local f
 
         mapsync.create_diff(baseline_chunk, chunk_pos, function(changed_node)
+            if not f then
+                -- open file on first changed node
+                f = global_env.io.open(filename, "w")
+            end
             f:write(minetest.write_json(changed_node) .. '\n')
         end)
 
-        f:close()
+        -- close if diff generated
+        if f then
+            f:close()
+        end
         return true
     end,
     load_chunk = function(backend_def, chunk_pos, vmanip)
