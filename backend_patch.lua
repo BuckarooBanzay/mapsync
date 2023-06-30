@@ -26,11 +26,9 @@ mapsync.register_backend_handler("patch", {
         return true
     end,
     load_chunk = function(backend_def, chunk_pos, vmanip)
-        -- load baseline chunk
-        local success, msg = mapsync.deserialize_chunk(chunk_pos, get_path(backend_def.path, chunk_pos), vmanip)
-        if not success then
-            return success, msg
-        end
+        -- load baseline chunk (might be non-existent)
+        mapsync.deserialize_chunk(chunk_pos, get_path(backend_def.path, chunk_pos), vmanip)
+
         -- load diff if available
         local f = io.open(get_json_path(backend_def.patch_path, chunk_pos), "r")
         if not f then
@@ -75,6 +73,10 @@ mapsync.register_backend_handler("patch", {
             mapsync.emerge_chunk(chunk_pos, function()
                 -- save emerged chunk
                 mapsync.serialize_chunk(chunk_pos, get_path(backend_def.path, chunk_pos))
+
+                -- remove patch file
+                local patch_path = get_json_path(backend_def.patch_path, chunk_pos)
+                global_env.os.remove(patch_path)
 
                 emerge_count = emerge_count + 1
                 if emerge_count < #chunk_pos_list then

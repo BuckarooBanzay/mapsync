@@ -6,14 +6,14 @@ local function create_mapblock(mapblock_pos, mapblock, callback)
     assert(#mapblock.param2 == 4096)
 
     for i=1,4096 do
-        -- relative position in the mapblock
-        local rel_pos = mapsync.mapblock_index_to_pos(i)
-
-        -- relative position in the chunk
-        local rel_chunk_pos = vector.add(rel_pos, vector.multiply(mapblock_pos, 16))
-
         local nodeid = mapblock.node_ids[i]
         if nodeid ~= c_air then
+            -- relative position in the mapblock
+            local rel_pos = mapsync.mapblock_index_to_pos(i)
+
+            -- relative position in the chunk
+            local rel_chunk_pos = vector.add(rel_pos, vector.multiply(mapblock_pos, 16))
+
             local nodename = minetest.get_name_from_content_id(nodeid)
 
             local node = {
@@ -126,15 +126,16 @@ function mapsync.create_diff(baseline_chunk, chunk_pos, callback)
                 local mapblock_pos = {x=x, y=y, z=z}
                 local rel_mapblock_pos = vector.subtract(mapblock_pos, mb_pos1)
                 local blockdata = mapsync.serialize_mapblock(mapblock_pos, node_mapping)
-                local baseline_mapblock = baseline_chunk.mapblocks[minetest.pos_to_string(rel_mapblock_pos)]
+                local baseline_mapblock = baseline_chunk and
+                    baseline_chunk.mapblocks[minetest.pos_to_string(rel_mapblock_pos)]
 
                 if blockdata.empty and baseline_mapblock then
                     -- block removed
-                    air_mapblock(mapblock_pos, callback)
+                    air_mapblock(rel_mapblock_pos, callback)
 
                 elseif not blockdata.empty and not baseline_mapblock then
                     -- block added
-                    create_mapblock(mapblock_pos, blockdata, callback)
+                    create_mapblock(rel_mapblock_pos, blockdata, callback)
 
                 elseif not blockdata.empty and baseline_mapblock then
                     -- both blocks exist, compare
