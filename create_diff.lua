@@ -99,7 +99,9 @@ local function diff_mapblock(mapblock_pos, baseline_mapblock, mapblock, callback
 
         if new_meta then
             -- add empty inventory to baseline if not already there
-            baseline_meta.inventory = baseline_meta.inventory or {}
+            if baseline_meta then
+                baseline_meta.inventory = baseline_meta.inventory or {}
+            end
 
             if not mapsync.deep_compare(baseline_meta, new_meta) then
                 -- metadata not equal or new
