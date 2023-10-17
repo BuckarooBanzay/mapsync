@@ -31,6 +31,16 @@ function mapsync.serialize_chunk(chunk_pos, filename)
         return true
     end
 
+    local node_mapping_count = 0
+    for _ in pairs(node_mapping) do
+        node_mapping_count = node_mapping_count + 1
+    end
+
+    if node_mapping_count == 1 and node_mapping["air"] then
+        -- only light changed and just air, skip
+        return true
+    end
+
     -- open zip for writing
     local f = global_env.io.open(filename, "wb")
     if not f then

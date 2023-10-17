@@ -42,6 +42,8 @@ function mapsync.serialize_mapblock(mapblock_pos, node_mapping)
 	assert((pos2.y - pos1.y) == 15)
 	assert((pos2.z - pos1.z) == 15)
 
+	minetest.fix_light(pos1, pos2)
+
 	local manip = minetest.get_voxel_manip()
 	local e1, e2 = manip:read_from_map(pos1, pos2)
 	local area = VoxelArea:new({MinEdge=e1, MaxEdge=e2})
@@ -83,7 +85,8 @@ function mapsync.serialize_mapblock(mapblock_pos, node_mapping)
 			node_id = air_content_id
 		end
 
-		if node_id ~= air_content_id then
+		if node_id ~= air_content_id or param1[i] ~= 15 then
+			-- there is a non-air node here or the light is set to a non-default value
 			blockdata.empty = false
 		end
 

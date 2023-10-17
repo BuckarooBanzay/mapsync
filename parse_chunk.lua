@@ -38,6 +38,9 @@ function mapsync.parse_chunk(filename)
         mapblocks = {}
     }
 
+    local param1_offset = 4096 * 2 * mapblock_count
+    local param2_offset = 4096 * 3 * mapblock_count
+
     for mbi, rel_mapblock_pos in ipairs(manifest.block_pos) do
         local blockdata = {
             node_ids = {},
@@ -48,8 +51,8 @@ function mapsync.parse_chunk(filename)
 
         for i=1,4096 do
             local node_id = decode_uint16(mapdata, ((mbi-1) * 4096 * 2) + (i * 2) - 2)
-            local param1 = byte(mapdata, (4096 * 2 * mapblock_count) + ((mbi-1) * 4096) + i)
-            local param2 = byte(mapdata, (4096 * 3 * mapblock_count) + ((mbi-1) * 4096) + i)
+            local param1 = byte(mapdata, param1_offset + ((mbi-1) * 4096) + i)
+            local param2 = byte(mapdata, param2_offset + ((mbi-1) * 4096) + i)
 
             insert(blockdata.node_ids, node_id)
             insert(blockdata.param1, param1)
