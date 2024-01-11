@@ -14,6 +14,7 @@ end
 
 function mapsync.encrypt(key, data)
     local bk = get_block_key(key)
+    assert(#bk == 20)
     local ki = 1
     local out = {}
     for i = 1,#data do
