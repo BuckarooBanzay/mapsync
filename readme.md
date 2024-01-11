@@ -55,6 +55,10 @@ mapsync.register_backend("my-backend", {
 })
 ```
 
+To save the map you can either turn on autosave with `/mapsync_autosave on` or manually save on or multiple chunks with `/mapsync_save [chunk-range]`.
+
+The saved chunks will now automatically be loaded if the destination area is generated (on mapgen).
+
 ## Restricting the backend to a world-region
 
 The backend can implement the `select` function to only synchronize a subset of the world:
