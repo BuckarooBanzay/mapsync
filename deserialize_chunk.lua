@@ -49,3 +49,25 @@ function mapsync.get_manifest(filename)
     end
     return minetest.parse_json(manifest_str)
 end
+
+-- parses the key information of the chunk (if available)
+function mapsync.get_key_manifest(filename)
+    local f = global_env.io.open(filename, "rb")
+    local zip, err_msg = mtzip.unzip(f)
+    if not zip then
+        return false, err_msg
+    end
+
+    local key_entry = zip:get_entry("key_manifest.json")
+    if not key_entry then
+        -- no key found, unencrypted chunk
+        return nil
+    end
+
+    -- parse key info
+    local key_str, m_err_msg = zip:get("key_manifest.json")
+    if not key_str then
+        return false, m_err_msg
+    end
+    return minetest.parse_json(key_str)
+end
