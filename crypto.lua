@@ -8,12 +8,12 @@
 
 local byte, char, xor, insert = string.byte, string.char, mapsync.xor, table.insert
 
-local function get_block_key(key)
-    return minetest.sha1(key, true)
+local function get_block_key(password)
+    return minetest.sha1(password, true)
 end
 
-function mapsync.encrypt(key, data)
-    local bk = get_block_key(key)
+function mapsync.encrypt(password, data)
+    local bk = get_block_key(password)
     assert(#bk == 20)
     local ki = 1
     local out = {}
