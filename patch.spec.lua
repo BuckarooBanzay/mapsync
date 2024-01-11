@@ -34,10 +34,9 @@ mtt.register("patch backend", function(callback)
 
     -- get patch handler
     local patch_backend_def = mapsync.get_backend("my-patched-backend")
-    local patch_handler = mapsync.select_handler(patch_backend_def)
 
     -- apply patches back to shadowed backend
-    patch_handler.apply_patches(patch_backend_def, function(chunk_count)
+    mapsync.apply_patches(patch_backend_def, function(chunk_count)
         assert(chunk_count == 1)
         -- cleanup
         mapsync.unregister_backend("my-patched-backend")

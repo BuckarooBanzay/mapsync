@@ -26,33 +26,31 @@ end
 dofile(MP.."/api.lua")
 dofile(MP.."/privs.lua")
 
--- backends
-loadfile(MP.."/backend_fs.lua")(global_env)
-loadfile(MP.."/backend_patch.lua")(global_env)
-
 -- utilities / helpers
 dofile(MP.."/pos_iterator.lua")
 dofile(MP.."/encoding.lua")
 dofile(MP.."/serialize_mapblock.lua")
 dofile(MP.."/deserialize_mapblock.lua")
 dofile(MP.."/localize_nodeids.lua")
+dofile(MP.."/functions.lua")
 
 -- diff / patch
 dofile(MP.."/create_diff.lua")
 dofile(MP.."/apply_diff.lua")
+loadfile(MP.."/patch.lua")(global_env)
 
 -- save/load
 dofile(MP.."/auto_save.lua")
 dofile(MP.."/auto_update.lua")
-dofile(MP.."/save.lua")
+loadfile(MP.."/save.lua")(global_env)
+loadfile(MP.."/data.lua")(global_env)
+dofile(MP.."/load.lua")
 dofile(MP.."/mapgen.lua")
-dofile(MP.."/data.lua")
 
 -- hud stuff
 dofile(MP.."/hud.lua")
 
 -- pass on global env (secure/insecure)
-loadfile(MP.."/functions.lua")(global_env)
 loadfile(MP.."/serialize_chunk.lua")(global_env)
 loadfile(MP.."/parse_chunk.lua")(global_env)
 loadfile(MP.."/deserialize_chunk.lua")(global_env)
@@ -72,7 +70,7 @@ if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/crypto.spec.lua")
 	dofile(MP.."/data.spec.lua")
 	dofile(MP.."/diff.spec.lua")
-	dofile(MP.."/backend_patch.spec.lua")
+	dofile(MP.."/patch.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
 end

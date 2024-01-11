@@ -1,49 +1,12 @@
 
--- type => handler_def
-local backend_handlers = {}
-
-function mapsync.register_backend_handler(name, handler)
-    -- default to no-op functions
-    handler.validate_config = handler.validate_config or function() end
-    handler.init = handler.init or function() end
-
-    backend_handlers[name] = handler
-end
-
-function mapsync.select_handler(backend_def)
-    return backend_handlers[backend_def.type]
-end
-
--- type => handler_def
-local data_backend_handlers = {}
-
-function mapsync.register_data_backend_handler(name, handler)
-    data_backend_handlers[name] = handler
-end
-
-function mapsync.select_data_handler(data_backend_def)
-    return data_backend_handlers[data_backend_def.type]
-end
-
 -- name => backend_def
 local backends = {}
 
 -- register a map backend
 function mapsync.register_backend(name, backend_def)
-    local handler = mapsync.select_handler(backend_def)
-    if not handler then
-        error("unknown backend type: '" .. backend_def.type .. "' for backend '" .. name .. "'")
-    end
-
     backend_def.name = name
     -- default to always-on backend if no selector specified
     backend_def.select = backend_def.select or function() return true end
-
-    -- validate config
-    handler.validate_config(backend_def)
-
-    -- init backend def
-    handler.init(backend_def)
 
     -- register
     backends[name] = backend_def

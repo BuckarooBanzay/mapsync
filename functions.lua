@@ -70,10 +70,8 @@ function mapsync.get_backend_chunk_mtime(chunk_pos)
         return
     end
 
-	local handler = mapsync.select_handler(backend_def)
-
     -- get manifest
-    local manifest = handler.get_manifest(backend_def, chunk_pos)
+    local manifest = mapsync.get_manifest(mapsync.get_chunk_zip_path(backend_def.path, chunk_pos))
     if not manifest then
         return
     end
@@ -149,6 +147,14 @@ function mapsync.deep_compare(tbl1, tbl2)
 	end
 
 	return false
+end
+
+function mapsync.get_chunk_json_path(prefix, chunk_pos)
+    return prefix .. "/chunk_" .. minetest.pos_to_string(chunk_pos) .. ".json"
+end
+
+function mapsync.get_chunk_zip_path(prefix, chunk_pos)
+    return prefix .. "/chunk_" .. minetest.pos_to_string(chunk_pos) .. ".zip"
 end
 
 -- https://gist.github.com/SafeteeWoW/080e784e5ebfda42cad486c58e6d26e4
