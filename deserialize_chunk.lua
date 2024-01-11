@@ -4,6 +4,9 @@ local param1, param2, node_data
 
 -- deserializes the chunk to the world
 function mapsync.deserialize_chunk(chunk_pos, filename, vmanip)
+    -- TODO: check for key.json
+    -- mapsync.parse_chunk_key(filename)
+    -- if encrypted: decrypt if key available or move to pending queue
     local chunk, err_msg = mapsync.parse_chunk(filename)
     if not chunk then
         return false, err_msg
