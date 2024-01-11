@@ -18,21 +18,6 @@ mapsync.register_backend_handler("fs", {
 
     get_manifest = function(backend_def, chunk_pos)
         return mapsync.get_manifest(get_path(backend_def.path, chunk_pos))
-    end,
-
-    list_chunks = function(backend_def)
-        local files = minetest.get_dir_list(backend_def.path, false)
-        local chunks = {}
-        for _, filename in ipairs(files) do
-            if string.match(filename, "^[chunk_(].*[).zip]$") then
-                local pos_str = string.gsub(filename, "chunk_", "")
-                pos_str = string.gsub(pos_str, ".zip", "")
-
-                local pos = minetest.string_to_pos(pos_str)
-                table.insert(chunks, pos)
-            end
-        end
-        return chunks
     end
 })
 

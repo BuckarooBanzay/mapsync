@@ -46,7 +46,6 @@ dofile(MP.."/auto_save.lua")
 dofile(MP.."/auto_update.lua")
 dofile(MP.."/save.lua")
 dofile(MP.."/mapgen.lua")
-dofile(MP.."/validate.lua")
 dofile(MP.."/data.lua")
 
 -- hud stuff
@@ -75,6 +74,5 @@ if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/diff.spec.lua")
 	dofile(MP.."/backend_patch.spec.lua")
 	dofile(MP.."/api.spec.lua")
-	dofile(MP.."/validate.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
 end
