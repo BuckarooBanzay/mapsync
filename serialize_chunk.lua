@@ -41,6 +41,9 @@ function mapsync.serialize_chunk(chunk_pos, filename)
         return true
     end
 
+    -- get key manifest from zip before overwriting
+    local key_manifest = mapsync.parse_chunk_key(filename)
+
     -- open zip for writing
     local f = global_env.io.open(filename, "wb")
     if not f then
@@ -92,9 +95,15 @@ function mapsync.serialize_chunk(chunk_pos, filename)
         end
     end
 
-    zip:add("mapdata.bin", table.concat(mapdata))
-    zip:add("metadata.json", minetest.write_json(metadata))
-    zip:add("manifest.json", minetest.write_json(manifest))
+    if key_manifest then
+        -- encrypt and add key manifest
+        -- TODO
+    else
+        -- store plain
+        zip:add("mapdata.bin", table.concat(mapdata))
+        zip:add("metadata.json", minetest.write_json(metadata))
+        zip:add("manifest.json", minetest.write_json(manifest))
+    end
 
     zip:close()
     f:close()
