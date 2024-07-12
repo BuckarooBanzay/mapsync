@@ -4,6 +4,10 @@ local backends = {}
 
 -- register a map backend
 function mapsync.register_backend(name, backend_def)
+    minetest.log("action", "[mapsync] registering backend '" .. name ..
+        "' with type '" .. backend_def.type ..
+        "' from mod: '" .. (minetest.get_current_modname() or "<nil>") .. "'")
+
     backend_def.name = name
     -- default to always-on backend if no selector specified
     backend_def.select = backend_def.select or function() return true end
@@ -14,6 +18,7 @@ end
 
 -- unregisters a backend
 function mapsync.unregister_backend(name)
+    minetest.log("action", "[mapsync] unregistering backend '" .. name .. "'")
     backends[name] = nil
 end
 

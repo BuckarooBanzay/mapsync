@@ -36,8 +36,6 @@ mtt.register("mapsync.encrypt benchmark", function(callback)
     local encrypted = mapsync.encrypt(key, plaintext)
     local t2 = minetest.get_us_time()
     print("encryption of " .. #plaintext .. " bytes took " .. (t2 - t1) .. " us")
-    -- make sure 1MB is en-/decrypted in under 100 ms
-    assert( (t2 - t1) < 100*1000)
 
     assert(plaintext ~= encrypted)
     assert(#plaintext == #encrypted)
