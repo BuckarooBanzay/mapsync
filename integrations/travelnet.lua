@@ -1,3 +1,5 @@
+-- simple wrapper for travelnet get- and save-operations
+-- stores the data in the mapsync-backend if available
 
 local old_get_travelnets = travelnet.get_travelnets
 function travelnet.get_travelnets(playername)

@@ -108,17 +108,6 @@ Archive:  chunk_(2,0,1).zip
 
 * `mapsync` allows the player to use the mapsync commands and enables the hud
 
-## Testing
-
-Requirements:
-* Docker
-* docker-compose
-
-Usage:
-```bash
-docker-compose up --build
-```
-
 # License
 
 * Code: MIT
