@@ -40,6 +40,7 @@ function serialize_lib.load_atomic(filename, load_callback)
         -- data-snapshot available, load it
         -- TODO: create a timestamp and load only if a newer snapshot if found
         local data_path = mapsync.get_data_file_path("advtrains_" .. relpath)
+        minetest.log("action", "[mapsync] loading advtrains data from '" .. data_path .. "'")
         return old_load_atomic(data_path, load_callback)
     else
         -- no data snapshot available, load default from world-folder
