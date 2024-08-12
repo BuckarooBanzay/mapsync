@@ -4,7 +4,10 @@ globals = {
 	"mapsync",
 	"worldedit",
 	"minetest",
-	"travelnet"
+	-- mods
+	"travelnet",
+	"advtrains",
+	"serialize_lib"
 }
 
 read_globals = {

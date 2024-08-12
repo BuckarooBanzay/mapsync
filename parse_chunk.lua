@@ -3,28 +3,6 @@ local global_env = ...
 -- local vars for faster access
 local insert, byte, decode_uint16 = table.insert, string.byte, mapsync.decode_uint16
 
--- parses the key information of the chunk (if available)
-function mapsync.parse_chunk_key(filename)
-    local f = global_env.io.open(filename, "rb")
-    local zip, err_msg = mtzip.unzip(f)
-    if not zip then
-        return false, err_msg
-    end
-
-    local key_entry = zip:get_entry("key.json")
-    if not key_entry then
-        -- no key found, unencrypted chunk
-        return nil
-    end
-
-    -- parse key info
-    local key_str, m_err_msg = zip:get("key.json")
-    if not key_str then
-        return false, m_err_msg
-    end
-    return minetest.parse_json(key_str)
-end
-
 -- parses an exported chunk file
 function mapsync.parse_chunk(filename)
     local f = global_env.io.open(filename, "rb")

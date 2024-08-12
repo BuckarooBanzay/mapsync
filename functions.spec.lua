@@ -58,12 +58,3 @@ mtt.register("mapsync.deep_compare", function(callback)
 
     callback()
 end)
-
-mtt.register("mapsync.xor", function(callback)
-    assert(mapsync.xor(0x00, 0x00) == 0x00)
-    assert(mapsync.xor(0x01, 0x01) == 0x00)
-    assert(mapsync.xor(0xFF, 0x01) == 0xFE)
-    assert(mapsync.xor(0x55, 0xAA) == 0xFF)
-    assert(mapsync.xor(0x01, 0x02) == 0x03)
-    callback()
-end)
