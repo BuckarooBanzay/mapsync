@@ -42,8 +42,8 @@ function serialize_lib.load_atomic(filename, load_callback)
     -- check world- and snapshot-timestamp
     local snapshot_timestamp = mapsync.load_data("advtrains_timestamp") or 0
     local world_timestamp = mapsync.storage:get_int(timestamp_storage_key)
-    -- snapshot exists and has a newer timestamp
-    local load_snapshot = snapshot_timestamp > world_timestamp
+    -- snapshot exists and has a different timestamp
+    local load_snapshot = snapshot_timestamp ~= world_timestamp
 
     local data_file = mapsync.get_data_file("advtrains_" .. relpath)
     if data_file and load_snapshot then
