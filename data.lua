@@ -31,16 +31,27 @@ function mapsync.load_data(key)
     return value
 end
 
--- returns a file to write to in the data-storage, nil if not available
-function mapsync.get_data_file(key, mode)
-    -- default to read
-    mode = mode or "r"
-
+-- returns the path of the data file, nil if not available
+function mapsync.get_data_file_path(key)
     local data_backend_def = mapsync.get_data_backend()
     if not data_backend_def then
         -- no data backend defined
         return
     end
 
-    return global_env.io.open(data_backend_def.path .. "/" .. key, mode)
+    return data_backend_def.path .. "/" .. key
+end
+
+-- returns a file to write to in the data-storage, nil if not available
+function mapsync.get_data_file(key, mode)
+    -- default to read
+    mode = mode or "r"
+
+    local path = mapsync.get_data_file_path(key)
+    if not path then
+        -- no data backend defined
+        return
+    end
+
+    return global_env.io.open(path, mode)
 end
