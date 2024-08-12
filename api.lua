@@ -4,6 +4,9 @@ local backends = {}
 
 -- register a map backend
 function mapsync.register_backend(name, backend_def)
+    -- apply defaults
+    backend_def.type = backend_def.type or "fs"
+
     minetest.log("action", "[mapsync] registering backend '" .. name ..
         "' with type '" .. backend_def.type ..
         "' from mod: '" .. (minetest.get_current_modname() or "<nil>") .. "'")
