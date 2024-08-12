@@ -8,6 +8,7 @@ assert(type(advtrains.ndb.save_callback) == "function")
 assert(type(advtrains.ndb.load_callback) == "function")
 assert(type(advtrains.read_component) == "function")
 assert(type(advtrains.save_component) == "function")
+assert(type(advtrains.save) == "function")
 assert(type(serialize_lib.load_atomic) == "function")
 assert(type(serialize_lib.save_atomic_multiple) == "function")
 assert(type(advtrains.fpath) == "string")
@@ -50,32 +51,51 @@ end
 
 local advtrains_parts = {"atlatc.ls", "interlocking.ls", "core.ls", "lines.ls", "ndb4.ls"}
 
+local function copy_advtrains_files()
+    if not mapsync.get_data_backend() then
+        return false, "no data-backend configured"
+    end
+
+    -- copy files to data-directory
+    local count = 0
+    for _, part in ipairs(advtrains_parts) do
+        local path = advtrains.fpath .. "_" .. part
+        local src = io.open(path, "rb")
+        if not src then
+            return false, "open failed for '" .. path .. "'"
+        end
+
+        local dst = mapsync.get_data_file("advtrains_" .. part, "wb")
+        local data = src:read("*all")
+        count = count + #data
+        dst:write(data)
+        dst:close()
+        src:close()
+    end
+    minetest.log("action", "[mapsync] saved " .. count .. " bytes of advtrains data")
+    return count
+end
+
+local old_advtrains_save = advtrains.save
+function advtrains.save(remove_players_from_wagons)
+    -- save advtrains state
+    old_advtrains_save(remove_players_from_wagons)
+
+    if mapsync.autosave then
+        -- save to data-directory
+        copy_advtrains_files()
+    end
+end
+
 minetest.register_chatcommand("mapsync_save_advtrains", {
     privs = { mapsync = true },
     func = function()
-        if not mapsync.get_data_backend() then
-            return false, "no data-backend configured"
-        end
+        -- save advtrains data first
+        old_advtrains_save()
 
-        -- save advtrains data first and remove players from wagons
-        local remove_players_from_wagons = true
-        advtrains.save(remove_players_from_wagons)
-
-        -- copy files to data-directory
-        local count = 0
-        for _, part in ipairs(advtrains_parts) do
-            local path = advtrains.fpath .. "_" .. part
-            local src = io.open(path, "rb")
-            if not src then
-                return false, "open failed for '" .. path .. "'"
-            end
-
-            local dst = mapsync.get_data_file("advtrains_" .. part, "wb")
-            local data = src:read("*all")
-            count = count + #data
-            dst:write(data)
-            dst:close()
-            src:close()
+        local count, err = copy_advtrains_files()
+        if err then
+            return false, err
         end
 
         return true, "saved " .. count .. " bytes of advtrains data"
