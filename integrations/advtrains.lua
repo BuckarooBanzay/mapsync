@@ -29,19 +29,31 @@ end
 local old_load_atomic = serialize_lib.load_atomic
 function serialize_lib.load_atomic(filename, load_callback)
     local relpath = string.sub(filename, #advtrains.fpath + 2)
+    local timestamp_storage_key = "advtrains_timestamp_" .. relpath
+
     print(dump({
         fn = "serialize_lib.load_atomic",
         filename = filename,
         fpath = advtrains.fpath,
-        relpath = relpath
+        relpath = relpath,
+        timestamp_storage_key = timestamp_storage_key
     }))
 
+    -- check world- and snapshot-timestamp
+    local snapshot_timestamp = mapsync.load_data("advtrains_timestamp") or 0
+    local world_timestamp = mapsync.storage:get_int(timestamp_storage_key)
+    -- snapshot exists and has a newer timestamp
+    local load_snapshot = snapshot_timestamp > world_timestamp
+
     local data_file = mapsync.get_data_file("advtrains_" .. relpath)
-    if data_file then
+    if data_file and load_snapshot then
+        -- apply snapshot timestamp to world
+        mapsync.storage:set_int(timestamp_storage_key, snapshot_timestamp)
         -- data-snapshot available, load it
-        -- TODO: create a timestamp and load only if a newer snapshot if found
         local data_path = mapsync.get_data_file_path("advtrains_" .. relpath)
-        minetest.log("action", "[mapsync] loading advtrains data from '" .. data_path .. "'")
+        minetest.log("action", "[mapsync] loading advtrains data from '" .. data_path ..
+            "' snapshot_timestamp: " .. snapshot_timestamp ..
+            " world_timestamp: " .. world_timestamp)
         return old_load_atomic(data_path, load_callback)
     else
         -- no data snapshot available, load default from world-folder
@@ -72,6 +84,9 @@ local function copy_advtrains_files()
         dst:close()
         src:close()
     end
+    -- write timestamp
+    mapsync.save_data("advtrains_timestamp", os.time())
+
     minetest.log("action", "[mapsync] saved " .. count .. " bytes of advtrains data")
     return count
 end
