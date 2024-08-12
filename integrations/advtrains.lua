@@ -21,8 +21,8 @@ function advtrains.read_component(name)
 end
 
 -- local old_advtrains_save_component = advtrains.save_component
-function advtrains.save_component(name)
-    assert(name == "version")
+function advtrains.save_component()
+    -- no-op
 end
 
 -- load from data- or world-path
@@ -30,14 +30,6 @@ local old_load_atomic = serialize_lib.load_atomic
 function serialize_lib.load_atomic(filename, load_callback)
     local relpath = string.sub(filename, #advtrains.fpath + 2)
     local timestamp_storage_key = "advtrains_timestamp_" .. relpath
-
-    print(dump({
-        fn = "serialize_lib.load_atomic",
-        filename = filename,
-        fpath = advtrains.fpath,
-        relpath = relpath,
-        timestamp_storage_key = timestamp_storage_key
-    }))
 
     -- check world- and snapshot-timestamp
     local snapshot_timestamp = mapsync.load_data("advtrains_timestamp") or 0
