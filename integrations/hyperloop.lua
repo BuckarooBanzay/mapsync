@@ -21,4 +21,4 @@ local function load()
 end
 
 -- load on startup
-load()
+minetest.register_on_mods_loaded(load)

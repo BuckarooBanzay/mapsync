@@ -8,9 +8,12 @@ function mapsync.save_data(key, value)
         return
     end
 
-    local f = assert(global_env.io.open(data_backend_def.path .. "/" .. key .. ".lua", "w"))
-    f:write(minetest.serialize(value))
+    local filename = data_backend_def.path .. "/" .. key .. ".lua"
+    local f = assert(global_env.io.open(filename, "w"))
+    local data = minetest.serialize(value)
+    f:write(data)
     f:close()
+    minetest.log("action", "[mapsync] wrote " .. #data .. " bytes of data to '" .. filename .. "'")
 end
 
 -- load simple key-value data

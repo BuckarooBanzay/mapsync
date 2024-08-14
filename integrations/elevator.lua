@@ -8,8 +8,12 @@ function elevator.save_elevator()
     old_elevator_save_elevator()
 end
 
--- load from backend if available
-local data = mapsync.load_data("elevator")
-if data and data.motors then
-    elevator.motors = data.motors
+local function load()
+    -- load from backend if available
+    local data = mapsync.load_data("elevator")
+    if data and data.motors then
+        elevator.motors = data.motors
+    end
 end
+
+minetest.register_on_mods_loaded(load)
