@@ -64,6 +64,10 @@ if minetest.get_modpath("advtrains") then
 	dofile(MP.."/integrations/advtrains.lua")
 end
 
+if minetest.get_modpath("hyperloop") then
+	dofile(MP.."/integrations/hyperloop.lua")
+end
+
 if minetest.get_modpath("elevator") then
 	dofile(MP.."/integrations/elevator.lua")
 end

@@ -8,7 +8,8 @@ globals = {
 	"travelnet",
 	"advtrains",
 	"serialize_lib",
-	"elevator"
+	"elevator",
+	"hyperloop"
 }
 
 read_globals = {
