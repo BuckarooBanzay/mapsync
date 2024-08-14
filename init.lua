@@ -64,6 +64,10 @@ if minetest.get_modpath("advtrains") then
 	dofile(MP.."/integrations/advtrains.lua")
 end
 
+if minetest.get_modpath("elevator") then
+	dofile(MP.."/integrations/elevator.lua")
+end
+
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/init.spec.lua")

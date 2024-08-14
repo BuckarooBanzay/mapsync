@@ -7,7 +7,8 @@ globals = {
 	-- mods
 	"travelnet",
 	"advtrains",
-	"serialize_lib"
+	"serialize_lib",
+	"elevator"
 }
 
 read_globals = {
