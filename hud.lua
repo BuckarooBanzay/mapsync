@@ -8,7 +8,7 @@ local function setup_hud(player)
 	local data = {}
 
 	data.img = player:hud_add({
-		hud_elem_type = "image",
+		[minetest.features.hud_def_type_field and "type" or "hud_elem_type"] = "image",
 		position = hud_position,
 		text = "mapsync_loaded.png",
 		offset = {x = 0,   y = 0},
@@ -17,7 +17,7 @@ local function setup_hud(player)
 	})
 
 	data.text = player:hud_add({
-		hud_elem_type = "text",
+		[minetest.features.hud_def_type_field and "type" or "hud_elem_type"] = "text",
 		position = hud_position,
 		number = 0x00ff00,
 		text = "",
@@ -27,7 +27,7 @@ local function setup_hud(player)
 	})
 
 	data.text2 = player:hud_add({
-		hud_elem_type = "text",
+		[minetest.features.hud_def_type_field and "type" or "hud_elem_type"] = "text",
 		position = hud_position,
 		number = 0x00ff00,
 		text = "",
