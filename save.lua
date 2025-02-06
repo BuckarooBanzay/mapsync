@@ -1,4 +1,3 @@
-local global_env = ...
 
 local function save_worker(ctx)
     local chunk_pos = ctx.iterator()
@@ -71,28 +70,6 @@ function mapsync.save(chunk_pos)
         return true, "No backend available"
     end
 
-    if not backend_def.patch_path then
-        -- direct save
-        return mapsync.serialize_chunk(chunk_pos, mapsync.get_chunk_zip_path(backend_def.path, chunk_pos))
-    else
-        -- create patch file
-        local baseline_chunk = mapsync.parse_chunk(mapsync.get_chunk_zip_path(backend_def.path, chunk_pos))
-        local filename = mapsync.get_chunk_json_path(backend_def.patch_path, chunk_pos)
-        local f = global_env.io.open(filename, "w")
-
-        local no_diff = true
-        mapsync.create_diff(baseline_chunk, chunk_pos, function(changed_node)
-            no_diff = false
-            f:write(minetest.write_json(changed_node) .. '\n')
-        end)
-
-        f:close()
-
-        if no_diff then
-            -- remove empty diff file
-            global_env.os.remove(filename)
-        end
-
-        return true
-    end
+    -- direct save
+    return mapsync.serialize_chunk(chunk_pos, mapsync.get_chunk_zip_path(backend_def.path, chunk_pos))
 end

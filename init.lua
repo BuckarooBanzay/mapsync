@@ -34,15 +34,10 @@ dofile(MP.."/deserialize_mapblock.lua")
 dofile(MP.."/localize_nodeids.lua")
 dofile(MP.."/functions.lua")
 
--- diff / patch
-dofile(MP.."/create_diff.lua")
-dofile(MP.."/apply_diff.lua")
-loadfile(MP.."/patch.lua")(global_env)
-
 -- save/load
 dofile(MP.."/auto_save.lua")
 dofile(MP.."/auto_update.lua")
-loadfile(MP.."/save.lua")(global_env)
+dofile(MP.."/save.lua")
 loadfile(MP.."/data.lua")(global_env)
 dofile(MP.."/load.lua")
 dofile(MP.."/mapgen.lua")
@@ -77,8 +72,6 @@ if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/init.spec.lua")
 	dofile(MP.."/functions.spec.lua")
 	dofile(MP.."/data.spec.lua")
-	dofile(MP.."/diff.spec.lua")
-	dofile(MP.."/patch.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
 end
