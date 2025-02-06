@@ -12,7 +12,6 @@ Synchronize the ingame map with a lua-backend
 Features:
 * Writes and saves maps to/from zip-files
 * Auto-updates chunks if a newer version on the backend is found
-* Patching/Merging support (with diff files)
 
 Planned features:
 * `placeholder` support
