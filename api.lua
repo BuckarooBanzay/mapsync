@@ -19,7 +19,11 @@ function mapsync.register_backend(name, backend_def)
     backends[name] = backend_def
     if minetest.ipc_set then
 	    -- register async
-	    minetest.ipc_set("mapsync:backend", backends)
+	    minetest.ipc_set("mapsync:backend", {
+		    type = backend_def.type,
+		    name = backend_def.name,
+		    path = backend_def.path
+	    })
     end
 end
 
