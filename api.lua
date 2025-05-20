@@ -17,6 +17,10 @@ function mapsync.register_backend(name, backend_def)
 
     -- register
     backends[name] = backend_def
+    if minetest.ipc_set then
+	    -- register async
+	    minetest.ipc_set("mapsync:backend", backends)
+    end
 end
 
 -- unregisters a backend

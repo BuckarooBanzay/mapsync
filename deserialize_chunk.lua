@@ -1,4 +1,4 @@
-local global_env = ...
+local global_env = ... or _G
 
 local param1, param2, node_data
 

@@ -1,8 +1,7 @@
-minetest.register_on_generated(function(minp)
+minetest.register_on_generated(function(vmanip, minp)
     local chunk_pos = mapsync.get_chunkpos(minp)
 
     local t1 = minetest.get_us_time()
-    local vmanip = minetest.get_mapgen_object("voxelmanip")
     mapsync.load(chunk_pos, vmanip)
     local t2 = minetest.get_us_time()
 
