@@ -55,6 +55,8 @@ else
 	minetest.register_mapgen_script(MP.."/load.lua")
 	minetest.register_mapgen_script(MP.."/parse_chunk.lua")
 	minetest.register_mapgen_script(MP.."/deserialize_chunk.lua")
+	minetest.register_mapgen_script(MP.."/deserialize_mapblock.lua")
+	minetest.register_mapgen_script(MP.."/localize_nodeids.lua")
 end
 
 -- hud stuff
@@ -84,9 +86,9 @@ end
 
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
-	dofile(MP.."/init.spec.lua")
 	dofile(MP.."/functions.spec.lua")
 	dofile(MP.."/data.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
+	dofile(MP.."/mapgen.spec.lua")
 end
