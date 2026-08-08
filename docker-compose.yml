@@ -12,3 +12,5 @@ services:
      INPUT_GIT_DEPENDENCIES: |
       https://github.com/BuckarooBanzay/mtt
       https://github.com/BuckarooBanzay/mtzip
+     INPUT_ADDITIONAL_CONFIG: |
+      deprecated_lua_api_handling = error

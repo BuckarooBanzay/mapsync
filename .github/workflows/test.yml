@@ -15,3 +15,5 @@ jobs:
         git_dependencies: |
           https://github.com/BuckarooBanzay/mtt
           https://github.com/BuckarooBanzay/mtzip
+        additional_config: |
+          deprecated_lua_api_handling = error
