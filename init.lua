@@ -40,7 +40,24 @@ dofile(MP.."/auto_update.lua")
 dofile(MP.."/save.lua")
 loadfile(MP.."/data.lua")(global_env)
 dofile(MP.."/load.lua")
-dofile(MP.."/mapgen.lua")
+
+if not minetest.register_mapgen_script then
+	-- sync mapgen
+	dofile(MP.."/mapgen.lua")
+else
+	-- async mapgen
+	minetest.register_mapgen_script(MP.."/api.async.lua")
+	minetest.register_mapgen_script(MP.."/pos_iterator.lua")
+	minetest.register_mapgen_script(MP.."/encoding.lua")
+	minetest.register_mapgen_script(MP.."/functions.lua")
+	minetest.register_mapgen_script(MP.."/mapgen.async.lua")
+
+	minetest.register_mapgen_script(MP.."/load.lua")
+	minetest.register_mapgen_script(MP.."/parse_chunk.lua")
+	minetest.register_mapgen_script(MP.."/deserialize_chunk.lua")
+	minetest.register_mapgen_script(MP.."/deserialize_mapblock.lua")
+	minetest.register_mapgen_script(MP.."/localize_nodeids.lua")
+end
 
 -- hud stuff
 dofile(MP.."/hud.lua")
@@ -69,9 +86,9 @@ end
 
 -- testing
 if minetest.get_modpath("mtt") and mtt.enabled then
-	dofile(MP.."/init.spec.lua")
 	dofile(MP.."/functions.spec.lua")
 	dofile(MP.."/data.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
+	dofile(MP.."/mapgen.spec.lua")
 end

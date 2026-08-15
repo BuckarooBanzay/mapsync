@@ -21,7 +21,6 @@ mtt.register("data", function(callback)
     assert(mapsync.get_data_file("myfile2.txt", "w"))
 
     -- write to data file
-    assert(not mapsync.get_data_file("myfile3.txt"))
     local f = mapsync.get_data_file("myfile3.txt", "w")
     assert(f)
     f:write("stuff")

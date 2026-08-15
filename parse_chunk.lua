@@ -1,4 +1,4 @@
-local global_env = ...
+local global_env = ... or _G
 
 -- local vars for faster access
 local insert, byte, decode_uint16 = table.insert, string.byte, mapsync.decode_uint16
