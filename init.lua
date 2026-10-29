@@ -76,4 +76,6 @@ if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/data.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
+	dofile(MP.."/serialize_mapblock.spec.lua")
+	dofile(MP.."/localize_nodeids.spec.lua")
 end
