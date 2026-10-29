@@ -71,6 +71,8 @@ end
 if minetest.get_modpath("mtt") and mtt.enabled then
 	dofile(MP.."/init.spec.lua")
 	dofile(MP.."/functions.spec.lua")
+	dofile(MP.."/pos_iterator.spec.lua")
+	dofile(MP.."/encoding.spec.lua")
 	dofile(MP.."/data.spec.lua")
 	dofile(MP.."/api.spec.lua")
 	dofile(MP.."/serialize_chunk.spec.lua")
