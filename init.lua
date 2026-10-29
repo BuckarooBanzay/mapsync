@@ -45,6 +45,9 @@ dofile(MP.."/mapgen.lua")
 -- hud stuff
 dofile(MP.."/hud.lua")
 
+-- ui
+dofile(MP.."/formspec.lua")
+
 -- pass on global env (secure/insecure)
 loadfile(MP.."/serialize_chunk.lua")(global_env)
 loadfile(MP.."/parse_chunk.lua")(global_env)
