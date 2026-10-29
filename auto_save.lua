@@ -5,16 +5,31 @@ minetest.register_chatcommand("mapsync_autosave", {
     privs = { mapsync = true },
 	func = function(_, params)
 		if params == "on" then
-			mapsync.autosave = true
-			mapsync.storage:set_int("autosave", 1)
+			mapsync.set_autosave(true)
 			return true, "Autosave enabled"
 		else
-			mapsync.autosave = false
-			mapsync.storage:set_int("autosave", 0)
+			mapsync.set_autosave(false)
 			return true, "Autosave disabled"
 		end
 	end
 })
+
+--- enables or disables the autosave feature (persistent)
+-- @param enabled true to enable
+function mapsync.set_autosave(enabled)
+	mapsync.autosave = enabled and true or false
+	mapsync.storage:set_int("autosave", enabled and 1 or 0)
+end
+
+-- autosave statistics
+local stats = {
+	-- total number of chunks dispatched since startup
+	dispatched = 0,
+	-- number of dispatched chunks that failed to save
+	failed = 0,
+	-- os.time() of the last dispatch, nil if none yet
+	last_dispatch = nil
+}
 
 
 -- list of chunks marked for export
@@ -26,10 +41,15 @@ local function worker()
 	for hash in pairs(chunks) do
 		count = count + 1
 		local chunk_pos = minetest.get_position_from_hash(hash)
-		mapsync.save(chunk_pos)
+		local success = mapsync.save(chunk_pos)
+		if not success then
+			stats.failed = stats.failed + 1
+		end
 	end
 
 	if count > 0 then
+		stats.dispatched = stats.dispatched + count
+		stats.last_dispatch = os.time()
 		minetest.chat_send_all("[mapsync] Dispatched " .. count .. " chunk(s) to export")
 	end
 	chunks = {}
@@ -37,6 +57,21 @@ local function worker()
 end
 
 minetest.after(1, worker)
+
+--- returns the autosave statistics
+-- @return table with `pending`, `dispatched`, `failed` and `last_dispatch`
+function mapsync.get_autosave_stats()
+	local pending = 0
+	for _ in pairs(chunks) do
+		pending = pending + 1
+	end
+	return {
+		pending = pending,
+		dispatched = stats.dispatched,
+		failed = stats.failed,
+		last_dispatch = stats.last_dispatch
+	}
+end
 
 --- marks a region as changed, to be used by dependent mods whose changes don't get caught
 --- by the usual change-detection
